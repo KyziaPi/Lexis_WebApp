@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Guessarium Homepage
+{% endblock %}
+
+{% block body_class %}homepage{% endblock %}
+
+{% block main %}
+<main class="homepage">   
+    <div class="homepage">
+        <div class="homepage-card">
+            <h1 class="homepage-card__title">Guessarium</h1>
+            <p class="homepage-card__slogan">All the wordplay under one roof</p>
+            <a href="https://github.com/raldddddddd/Lexis" class="homepage-card__btn homepage-card__btn--lexis">Powered by Lexis</a>
+        </div>
+
+        <div class="homepage-card">
+            <h2 class="homepage-card__secondaryMsg">Play our Games!</h2>
+            <div class="homepage-btn-container">
+                <form action="/game-redirect" method="post">
+                    <button name="game" value="snuzzle" class="homepage-card__btn homepage-card__btn--snuzzle">
+                        <div class="logo-name-container">
+                            <img src="{{ url_for('static', filename='images/logo/snuzzle.png') }}">
+                            <span>Snuzzle</span>
+                        </div>
+                    </button>
+                </form>
+
+                <form action="/game-redirect" method="post">
+                    <button name="game" value="filmster" class="homepage-card__btn homepage-card__btn--filmster">
+                        <div class="logo-name-container">
+                            <img src="{{ url_for('static', filename='images/logo/filmster.png') }}">
+                            <span>Filmster</span>
+                        </div>
+                    </button>
+                </form>
+
+                <form action="/game-redirect" method="post">
+                    <button name="game" value="raildle" class="homepage-card__btn homepage-card__btn--raildle">
+                        <div class="logo-name-container">
+                            <img src="{{ url_for('static', filename='images/logo/raildle.png') }}">
+                            <span>Raildle</span>
+                        </div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

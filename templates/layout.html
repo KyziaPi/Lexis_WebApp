@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+
+    <!-- https://getbootstrap.com/docs/5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    {% block additional_css %}{% endblock %}
+
+    <!-- stylesheet link -->
+    <link href="/static/css/styles.css" rel="stylesheet">
+
+    <!-- global js -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+    <!-- fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body class="{{ page }}">
+
+    {% if page != "homepage" %}
+    <nav class="navbar navbar-expand-xl bg-body-tertiary {{ page }}-nav">
+    <div class="container-fluid">
+        <a class="navbar-brand nav__logo-name-container">
+            {% if page == "snuzzle" %}
+                <img src="{{ url_for('static', filename='images/logo/snuzzle.png') }}">
+            {% elif page == "filmster" %}
+                <img src="{{ url_for('static', filename='images/logo/filmster.png') }}">
+            {% else %}
+                <img src="{{ url_for('static', filename='images/logo/raildle.png') }}">
+            {% endif %}
+            <span>{{ page|capitalize }}</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <button class="nav-link nav__logo-name-container {{ page }}">
+                    {% if page == "snuzzle" %}
+                        <img src="{{ url_for('static', filename='images/nav/snuzzle_tutorial.png') }}">
+                    {% elif page == "filmster" %}
+                        <img src="{{ url_for('static', filename='images/nav/filmster_tutorial.png') }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/nav/raildle_tutorial.png') }}">
+                    {% endif %}
+                        <span>How To Play</span>
+                </button>
+            </li>
+
+        </ul>
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <form action="/">
+                    <button class="nav-link nav__logo-name-container {{ page }}">
+                        <img src="{{ url_for('static', filename='images/nav/home_icon.png') }}">
+                        <span>Home</span>
+                    </button>
+                </form>
+            </li>
+            <li class="nav-item">
+                <form action="/game-redirect" method="post">
+                    {% if page == "snuzzle" %}
+                    <button name="game" value="filmster" class="nav-link nav__logo-name-container {{ page }}">
+                        <img src="{{ url_for('static', filename='images/logo/filmster.png') }}">
+                        <span>Filmster</span>
+                    </button>
+                    {% else %}
+                    <button name="game" value="snuzzle" class="nav-link nav__logo-name-container {{ page }}">
+                        <img src="{{ url_for('static', filename='images/logo/snuzzle.png') }}">
+                        <span>Snuzzle</span>
+                    </button>
+                    {% endif %}
+                </form>
+            </li>
+            <li class="nav-item">
+                <form action="/game-redirect" method="post">
+                    {% if page == "raildle" %}
+                    <button name="game" value="filmster" class="nav-link nav__logo-name-container {{ page }}">
+                        <img name="game" value="filmster" src="{{ url_for('static', filename='images/logo/filmster.png') }}">
+                        <span>Filmster</span>
+                    </button>
+                    {% else %}
+                    <button name="game" value="raildle" class="nav-link nav__logo-name-container {{ page }}">
+                        <img src="{{ url_for('static', filename='images/logo/raildle.png') }}">
+                        <span>Raildle</span>
+                    </button>
+                    {% endif %}
+                </form>
+            </li class="nav-item">
+            <li class="nav-item nav-link nav__logo-name-container">
+                <a href="https://github.com/raldddddddd/Lexis" class="nav-item__btn--lexis">Powered by Lexis</a>
+            </li>
+        </ul>
+        </div>
+    </div>
+    </nav>
+    
+    {% endif %}
+
+    {% block main %}{% endblock %}
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    {% block additional_scripts %}{% endblock %}
+    
+</body>
+</html>

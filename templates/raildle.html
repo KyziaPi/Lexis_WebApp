@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+
+{% block additional_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="/static/css/select2_edits.css" rel="stylesheet">
+{% endblock %}
+
+{% block title %}
+Raildle: Guess the HSR Character
+{% endblock %}
+
+{% block main %}
+
+<main>
+    <div class="raildle-tries-card">
+        <!-- 1 = {{ tries }} -->
+        <h1 class="raildle-tries-card__title">Tries: <span id="tries-counter">0</span>/5</h1>
+    </div>
+    
+    <div class="raildle-main-card">
+        <h1 class="raildle-main-card__title">Guess the Honkai Star Rail Character</h1>
+        
+        <div class="raildle-main-card__dropdown-container">
+            <select id="character-select">
+                <option></option>
+                <option value="Remembrance Trailblazer" 
+                        data-img="{{ url_for('static', filename='images/raildle/character/remembrance-trailblazer.png') }}">
+                    Remembrance Trailblazer
+                </option>
+                <option value="Harmony Trailblazer" 
+                        data-img="{{ url_for('static', filename='images/raildle/character/harmony-trailblazer.png') }}">
+                    Harmony Trailblazer
+                </option>
+                <option value="Remembrance Trailblazer1" 
+                        data-img="{{ url_for('static', filename='images/raildle/character/remembrance-trailblazer.png') }}">
+                    Remembrance Trailblazer1
+                </option>
+                <option value="Harmony Trailblazer1" 
+                        data-img="{{ url_for('static', filename='images/raildle/character/harmony-trailblazer.png') }}">
+                    Harmony Trailblazer1
+                </option>
+                <option value="Remembrance Trailblazer2" 
+                        data-img="{{ url_for('static', filename='images/raildle/character/remembrance-trailblazer.png') }}">
+                    Remembrance Trailblazer2
+                </option>
+                <option value="Harmony Trailblazer2" 
+                        data-img="{{ url_for('static', filename='images/raildle/character/harmony-trailblazer.png') }}">
+                    Harmony Trailblazer2
+                </option>
+            </select>
+        </div> 
+
+        <div class="raildle-main-card__table-container">
+            <table class="raildle-main-card__table" id="answers-table">
+                <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Path</th>
+                    <th>Element</th>
+                    <th>World/Faction</th>
+                    <th class="center-text"><span>Weekly</span><span>Boss</span></th>
+                </tr>
+
+                <!-- loop for each answer -->
+                <!-- <tr>
+                    <td class="table-items--chara-img" id="photo-1">
+                        <img src="{{ url_for('static', filename='images/raildle/character/remembrance-trailblazer.png') }}">
+                    </td>
+                    <td class="table-items--wrong" id="name-1">
+                        Remembrance Trailblazer
+                    </td>
+                    <td class="table-items--correct" id="path-1">
+                        <img src="{{ url_for('static', filename='images/raildle/path/remembrance.webp') }}">
+                    </td>
+                    <td class="table-items--wrong" id="element-1">
+                        <img src="{{ url_for('static', filename='images/raildle/element/ice.webp') }}">
+                    </td>
+                    <td class="table-items--wrong" id="world-faction-1">
+                        Astral Express
+                    </td>
+                    <td class="table-items--correct" id="weekly-boss-1">
+                        <img src="{{ url_for('static', filename='images/raildle/boss_drop/Auspice_Sliver.webp') }}">
+                    </td>
+                </tr> -->
+
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block additional_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ url_for('static', filename='js/raildle.js') }}"></script>
+{% endblock %}
+
+
+    <!-- FOR REFERENCE LANG FOR WHEN DONE NA UNG INTERPRETER -->
+            <select id="character-select" placeholder="Enter Character Name">
+                <!-- loop for each characters and icon -->
+                 <!-- {% for name, img_name in characters %} -->
+
+                 <!-- remembrance trailblazer = {{ name }} -->
+                  <!-- remembrance-trailblazer.png = {{ img_name }} -->
+
+                 <!-- test value -->
+                 <option value="Remembrance Trailblazer"
+                 data-img="{{ url_for('static', filename='images/raildle/character/remembrance-trailblazer.png') }}">
+                    Remembrance Trailblazer
+                 </option>
+                 <!-- {% endfor %} -->
+            </select>
