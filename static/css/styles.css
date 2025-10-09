@@ -22,6 +22,7 @@ h1, h2, h3, button, a, th {
     text-decoration: none;
     border: none;
     margin: 0;
+    cursor: default;
 }
 
 a.secondary-link {
@@ -31,6 +32,7 @@ a.secondary-link {
 p, td {
     font-family: 'Inter', sans-serif;
     margin: 0;
+    cursor: default;
 }
 
 main {
@@ -203,6 +205,7 @@ nav img.no-text {
     transition: 0.2s;
     background-color: var(--lexis);
     border-radius: .5rem;
+    cursor: pointer;
 }
 
 .nav-item__btn--lexis:hover {
@@ -377,6 +380,10 @@ td.table-items--wrong {
 
 .raildle-tries-card__play-again-btn:hover {
     background-color: var(--lexis-hover);
+}
+
+.raildle-tries-card__play-again-btn h3 {
+    cursor: pointer;
 }
 
 .raildle-help-container {
