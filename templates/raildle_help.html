@@ -44,34 +44,37 @@ Raildle - How To Play
             </table>
         </div>
 
-        <p class="raildle-main-card__title raildle-main-card__title--info">
-            Type the character within the dropdown and click it to make a guess. You have 5 tries to guess.
-        </p>
-        <p class="raildle-main-card__title raildle-main-card__title--info">
-            Here are what the corresponding color means for the category:
-        </p>
+        <div class="raildle-help-info-container">
+            <p class="raildle-main-card__title raildle-main-card__title--info">
+                Type the character within the dropdown and click it to make a guess. You have 5 tries to guess.
+                You win if you guess the right character within 5 tries.
+            </p>
+            <p class="raildle-main-card__title raildle-main-card__title--info">
+                Here are what the corresponding color means for the category:
+            </p>
 
-        <div class="raildle-help-container">
-            <div class="raildle-help__card raildle-help__card--right">
-                <p>
-                    Correct Guess
-                </p>
+            <div class="raildle-help-container">
+                <div class="raildle-help__card raildle-help__card--right">
+                    <p>
+                        Correct Guess
+                    </p>
+                </div>
+                <div class="raildle-help__card raildle-help__card--wrong">
+                    <p>
+                        Wrong Guess
+                    </p>
+                </div>
             </div>
-            <div class="raildle-help__card raildle-help__card--wrong">
-                <p>
-                    Wrong Guess
-                </p>
-            </div>
-        </div>
 
-        <div class="raildle-main-card__dropdown-container">
-            <form action="/raildle/play-again" method="post">
-                <button class="raildle-tries-card__play-again-btn">
-                    <h3>
-                        PLAY THE GAME
-                    </h3>
-                </button>
-            </form>
+            <div class="raildle-main-card__dropdown-container">
+                <form action="/raildle/play-again" method="post">
+                    <button class="raildle-tries-card__play-again-btn">
+                        <h3>
+                            PLAY THE GAME
+                        </h3>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </main>

@@ -409,6 +409,10 @@ td.table-items--wrong {
     background-color: var(--raildle-wrong-bg);
 }
 
+.raildle-help-info-container {
+    margin: 2rem 10rem;
+}
+
 @media (max-width: 1024px) {
     .raildle-tries-card {
         margin: 2rem 3rem;
@@ -428,5 +432,9 @@ td.table-items--wrong {
     .raildle-main-card__table {
         margin: 1rem;
         width: 100%
+    }
+
+    .raildle-help-info-container {
+        margin: 2rem 0;
     }
 }
