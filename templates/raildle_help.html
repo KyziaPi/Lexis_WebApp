@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Raildle - How To Play
+{% endblock %}
+
+{% block main %}
+<main>
+    <div class="raildle-main-card">
+        <h1 class="raildle-main-card__title">How To Play</h1>    
+        
+        <h1 class="raildle-main-card__title raildle-main-card__title--smaller">Sample Output:</h1>    
+        <div class="raildle-main-card__table-container">
+            <table class="raildle-main-card__table" id="answers-table">
+                <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Path</th>
+                    <th>Element</th>
+                    <th>World/Faction</th>
+                    <th class="center-text"><span>Weekly</span><span>Boss</span></th>
+                </tr>
+
+                <tr>
+                    <td class="table-items--chara-img" id="photo-1">
+                        <img src="{{ url_for('static', filename='images/raildle/character/remembrance-trailblazer.png') }}">
+                    </td>
+                    <td class="table-items--wrong" id="name-1">
+                        Remembrance Trailblazer
+                    </td>
+                    <td class="table-items--correct" id="path-1">
+                        <img src="{{ url_for('static', filename='images/raildle/path/remembrance.webp') }}">
+                    </td>
+                    <td class="table-items--wrong" id="element-1">
+                        <img src="{{ url_for('static', filename='images/raildle/element/ice.webp') }}">
+                    </td>
+                    <td class="table-items--wrong" id="world-faction-1">
+                        Astral Express
+                    </td>
+                    <td class="table-items--correct" id="weekly-boss-1">
+                        <img src="{{ url_for('static', filename='images/raildle/boss_drop/Auspice_Sliver.webp') }}">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <p class="raildle-main-card__title raildle-main-card__title--info">
+            Type the character within the dropdown and click it to make a guess. You have 5 tries to guess.
+        </p>
+        <p class="raildle-main-card__title raildle-main-card__title--info">
+            Here are what the corresponding color means for the category:
+        </p>
+
+        <div class="raildle-help-container">
+            <div class="raildle-help__card raildle-help__card--right">
+                <p>
+                    Correct Guess
+                </p>
+            </div>
+            <div class="raildle-help__card raildle-help__card--wrong">
+                <p>
+                    Wrong Guess
+                </p>
+            </div>
+        </div>
+
+        <div class="raildle-main-card__dropdown-container">
+            <form action="/raildle/play-again" method="post">
+                <button class="raildle-tries-card__play-again-btn">
+                    <h3>
+                        PLAY THE GAME
+                    </h3>
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

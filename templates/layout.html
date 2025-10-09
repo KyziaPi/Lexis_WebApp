@@ -27,32 +27,38 @@
     {% if page != "homepage" %}
     <nav class="navbar navbar-expand-xl bg-body-tertiary {{ page }}-nav">
     <div class="container-fluid">
-        <a class="navbar-brand nav__logo-name-container">
-            {% if page == "snuzzle" %}
-                <img src="{{ url_for('static', filename='images/logo/snuzzle.png') }}">
-            {% elif page == "filmster" %}
-                <img src="{{ url_for('static', filename='images/logo/filmster.png') }}">
-            {% else %}
-                <img src="{{ url_for('static', filename='images/logo/raildle.png') }}">
-            {% endif %}
-            <span>{{ page|capitalize }}</span>
-        </a>
+        <form action="/game-redirect" method="post">
+            <button name="game" value="{{ page }}" class="navbar-brand nav-link nav__logo-name-container {{ page }}">
+                {% if page == "snuzzle" %}
+                    <img src="{{ url_for('static', filename='images/logo/snuzzle.png') }}">
+                {% elif page == "filmster" %}
+                    <img src="{{ url_for('static', filename='images/logo/filmster.png') }}">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/logo/raildle.png') }}">
+                {% endif %}
+                <span>{{ page|capitalize }}</span>
+            </button>
+        </form>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-                <button class="nav-link nav__logo-name-container {{ page }}">
-                    {% if page == "snuzzle" %}
-                        <img src="{{ url_for('static', filename='images/nav/snuzzle_tutorial.png') }}">
-                    {% elif page == "filmster" %}
-                        <img src="{{ url_for('static', filename='images/nav/filmster_tutorial.png') }}">
-                    {% else %}
-                        <img src="{{ url_for('static', filename='images/nav/raildle_tutorial.png') }}">
-                    {% endif %}
-                        <span>How To Play</span>
-                </button>
+                <form action="/tutorial-redirect" method="post">
+                        {% if page == "snuzzle" %}
+                        <button name="game" value="snuzzle" class="nav-link nav__logo-name-container {{ page }}">
+                            <img src="{{ url_for('static', filename='images/nav/snuzzle_tutorial.png') }}">
+                        {% elif page == "filmster" %}
+                        <button name="game" value="filmster" class="nav-link nav__logo-name-container {{ page }}">
+                            <img src="{{ url_for('static', filename='images/nav/filmster_tutorial.png') }}">
+                        {% else %}
+                        <button name="game" value="raildle" class="nav-link nav__logo-name-container {{ page }}">
+                            <img src="{{ url_for('static', filename='images/nav/raildle_tutorial.png') }}">
+                        {% endif %}
+                            <span>How To Play</span>
+                    </button>
+                </form>
             </li>
 
         </ul>

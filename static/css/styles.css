@@ -21,6 +21,7 @@ h1, h2, h3, button, a, th {
     font-weight: bold;
     text-decoration: none;
     border: none;
+    margin: 0;
 }
 
 a.secondary-link {
@@ -188,7 +189,7 @@ nav img.no-text {
 
 .navbar-brand span {
     font-size: 2rem;
-    cursor: default;
+    font-weight: bold;
 }
 
 .nav-item span, .nav-item a {
@@ -257,6 +258,16 @@ body.raildle {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 2rem;
+}
+
+.raildle-main-card__title--smaller {
+    font-size: 1.7rem;
+    margin-bottom: 0;
+}
+
+.raildle-main-card__title--info {
+    font-size: 1.5rem;
+    margin-bottom: 0;
 }
 
 .raildle-main-card__dropdown-container {
@@ -366,6 +377,29 @@ td.table-items--wrong {
 
 .raildle-tries-card__play-again-btn:hover {
     background-color: var(--lexis-hover);
+}
+
+.raildle-help-container {
+    display: flex;
+    flex: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.raildle-help__card {
+    padding: 1.5rem;
+    border: .2rem solid var(--lexis);
+    color: #fff;
+}
+
+.raildle-help__card--right {
+    background-color: var(--raildle-correct-bg);
+}
+
+.raildle-help__card--wrong {
+    background-color: var(--raildle-wrong-bg);
 }
 
 @media (max-width: 1024px) {

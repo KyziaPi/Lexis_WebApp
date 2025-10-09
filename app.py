@@ -3,7 +3,11 @@ from flask import Flask, render_template, request, jsonify, abort, redirect, ses
 
 app = Flask(__name__)
 
-games = {
+games = [
+    "snuzzle", "filmster", "raildle"
+]
+
+routes = {
     "snuzzle": "/snuzzle",
     "filmster": "/filmster",
     "raildle": "/raildle"
@@ -27,13 +31,35 @@ def homepage():
 def gameRedirect():
     game = request.form.get("game")
     
-    if game not in games:
+    if game not in routes:
         abort(400, "Invalid game selected")
         
-    route = games[game]
+    route = routes[game]
     
     return redirect(route)  # Redirect to game
+
+
+# Tutorial redirector
+@app.route("/tutorial-redirect", methods=["POST"])
+def tutorialRedirect():
+    game = request.form.get("game")
     
+    if game not in routes:
+        abort(400, "Invalid game selected")
+    
+    route = routes[game]
+    
+    return redirect(f"{route}/tutorial") # Redirect to tutorial for chosen game
+
+    
+# Tutorial page
+@app.route("/<game>/tutorial")
+def tutorialPage(game): 
+    if game not in games:
+        return "Invalid game", 400
+    
+    return render_template(f"{game}_help.html", page=game)
+
 
 # Game: Snuzzle
 @app.route("/snuzzle", methods=["GET", "POST"])
