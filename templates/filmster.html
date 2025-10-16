@@ -1,9 +1,38 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Filmster: ???
+Filmster: Guess the Movie
 {% endblock %}
 
 {% block main %}
+<div class="filmster">
+  
+  <div class="filmster-tries-info">Tries Left: <span id="filmster-triesLeft">3</span> ⏳</div>
+
+  <h1 class="filmster-title">Guess the Movie!</h1>
+
+  <div id="filmster-hint1" class="filmster-hint filmster-hint-1">
+    <strong>Hint 1: A boy with a lightning scar.</strong>
+  </div>
+
+  <div id="filmster-hint2" class="filmster-hint filmster-locked">Unlock hint! 🔒</div>
+  <div id="filmster-hint3" class="filmster-hint filmster-locked">Unlock hint! 🔒</div>
+
+  <button id="filmster-revealBtn" class="filmster-reveal-btn">Reveal Another Hint 🔍</button>
+
+  <div class="filmster-choices">
+    <button class="filmster-choice" data-answer="wrong">Twilight</button>
+    <button class="filmster-choice" data-answer="correct">Harry Potter</button>
+    <button class="filmster-choice" data-answer="wrong">Percy Jackson</button>
+    <button class="filmster-choice" data-answer="wrong">The Notebook</button>
+  </div>
+
+  <div id="filmster-feedback" class="filmster-feedback"></div>
+</div>
+
+{% block additional_scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="{{ url_for('static', filename='js/filmster.js') }}"></script>
+{% endblock %}
 
 {% endblock %}

@@ -234,8 +234,313 @@ nav img.no-text {
 
 
 /* FILMSTER */
+.filmster {
+  text-align: center !important;
+  position: relative;
+}
+
+.filmster * {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.filmster p, 
+.filmster div:not(.filmster-choices),
+.filmster-hint {
+  font-family: 'Inter', sans-serif !important;
+}
+
+.filmster-title {
+  color: #000 !important;
+  font-size: 2.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  text-align: center !important;
+  font-weight: bold !important;
+}
+
+.filmster-tries-info {
+  position: absolute;
+  top: 3rem;
+  right: 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #000;
+}
+
+.filmster-hint {
+  width: 90%;
+  max-width: 550px;
+  margin: 0 auto 1rem auto !important;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  color: white !important;
+  font-size: 1.1rem;
+  text-align: center !important;
+  display: block;
+}
+
+.filmster-hint strong {
+  color: white !important;
+  font-weight: normal;
+}
+
+.filmster-hint-1 {
+  background-color: #2d3acc !important;
+  font-style: italic;
+}
+
+.filmster-locked {
+  background-color: #8b7ab8 !important;
+  cursor: not-allowed;
+  opacity: 0.9;
+  color: white !important;
+}
+
+.filmster-unlocked {
+  background-color: #2d3acc !important;
+  font-style: italic;
+}
+
+@keyframes filmster-slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filmster-reveal-btn {
+  background-color: #6b2d8f !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 50px;
+  padding: 0.9rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 2rem auto !important;
+  transition: all 0.2s;
+  cursor: pointer;
+  display: block;
+}
+
+.filmster-reveal-btn:hover {
+  background-color: #7d3a9e !important;
+  transform: scale(1.02);
+}
+
+.filmster-reveal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.filmster-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  max-width: 700px;
+  margin: 3rem auto 0 auto !important;
+  padding: 0 1rem;
+}
+
+.filmster-choice {
+  background-color: #b86cff !important;
+  color: black !important;
+  font-weight: bold !important;
+  border: none !important;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  clip-path: polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
+}
+
+.filmster-choice:hover:not(:disabled) {
+  background-color: #9b4ce6 !important;
+  transform: scale(1.05);
+  color: white !important;
+}
+
+.filmster-choice:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.filmster-choice.correct {
+  background-color: #2ecc71 !important;
+  color: white !important;
+}
+
+.filmster-choice.incorrect {
+  background-color: #f74531 !important;
+  color: white !important;
+}
+
+.filmster-feedback {
+  margin-top: 2rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  min-height: 2rem;
+  text-align: center !important;
+}
+
+.filmster-feedback.correct {
+  color: #2ecc71 !important;
+}
+
+.filmster-feedback.incorrect {
+  color: #f74531 !important;
+}
 
 
+@media (max-width: 768px) {
+  .filmster-title {
+    font-size: 2rem;
+  }
+
+  .filmster-choices {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .filmster-hint {
+    width: 95%;
+    font-size: 1rem;
+  }
+
+  .filmster-tries-info {
+    position: static;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .filmster-reveal-btn {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+.filmster-help {
+  min-height: 100vh;
+  background-color: #ffffff;
+  padding: 3rem 1rem;
+}
+
+.filmster-help__container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.filmster-help__title {
+  color: var(--filmster-main);
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+}
+
+.filmster-help__card {
+  background-color: var(--filmster-main);
+  color: #fff;
+  padding: 3rem;
+  border-radius: 1rem;
+}
+
+.filmster-help__welcome {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+}
+
+.filmster-help__goal {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  line-height: 1.8;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+}
+
+.filmster-help__goal strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.filmster-help__subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  color: #fff;
+}
+
+.filmster-help__steps {
+  font-size: 1.1rem;
+  line-height: 2;
+  margin-bottom: 2rem;
+  padding-left: 2rem;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+}
+
+.filmster-help__steps li {
+  margin-bottom: 0.8rem;
+}
+
+.filmster-help__tip {
+  font-size: 1.2rem;
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border-left: 4px solid #ffd700;
+  margin-top: 2rem;
+  line-height: 1.8;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+}
+
+.filmster-help__tip strong {
+  color: #ffd700;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .filmster-help__title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .filmster-help__card {
+    padding: 2rem 1.5rem;
+  }
+
+  .filmster-help__welcome {
+    font-size: 1.4rem;
+  }
+
+  .filmster-help__goal {
+    font-size: 1rem;
+  }
+
+  .filmster-help__subtitle {
+    font-size: 1.2rem;
+  }
+
+  .filmster-help__steps {
+    font-size: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .filmster-help__tip {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+}
 
 /* RAILDLE */
 

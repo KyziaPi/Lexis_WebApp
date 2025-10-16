@@ -1,12 +1,33 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Raildle - How To Play
+Filmster - How To Play
 {% endblock %}
 
 {% block main %}
-<main>
-    <h1>HOW TO PLAY TEST</h1>
+<main class="filmster-help">
+    <div class="filmster-help__container">
+        <h1 class="filmster-help__title">HOW TO PLAY</h1>
+        
+        <div class="filmster-help__card">
+            <h2 class="filmster-help__welcome">Welcome to Filmster, the ultimate movie guessing game! 🎥</h2>
+            
+            <p class="filmster-help__goal"><strong>Goal:</strong> Guess the correct movie based on the hints provided. You have 3 hints and 3 tries, so think carefully before choosing!</p>
+            
+            <h3 class="filmster-help__subtitle">How it works:</h3>
+            
+            <ol class="filmster-help__steps">
+                <li>You'll see 3 hidden hint boxes that corresponds to the movie.</li>
+                <li>Tap the "Reveal Hint" button to uncover one hint at a time.</li>
+                <li>After reading the hints, choose your answer from the 4 movie options below.</li>
+                <li>If your answer is correct, the button will turn green.</li>
+                <li>If your answer is wrong, it will turn red and you'll lose one try.</li>
+                <li>You can still reveal more hints if you're unsure!</li>
+                <li>The game ends when you guess the correct movie or run out of tries.</li>
+            </ol>
+            
+            <p class="filmster-help__tip">💡 <strong>Tip:</strong> Use your hints wisely as each one makes the movie easier to guess!</p>
+        </div>
+    </div>
 </main>
-
 {% endblock %}
