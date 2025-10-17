@@ -45,6 +45,7 @@ filmsterChoices.forEach(choice => {
       filmsterFeedback.className = 'filmster-feedback correct';
       filmsterGameOver = true;
       disableFilmsterChoices();
+      showPlayAgainButton();
     } else {
       this.classList.add('incorrect');
       this.disabled = true;
@@ -60,6 +61,7 @@ filmsterChoices.forEach(choice => {
         filmsterGameOver = true;
         disableFilmsterChoices();
         highlightFilmsterCorrectAnswer();
+        showPlayAgainButton();
       }
     }
   });
@@ -75,4 +77,64 @@ function highlightFilmsterCorrectAnswer() {
       choice.classList.add('correct');
     }
   });
+}
+
+function showPlayAgainButton() {
+  const playAgainBtn = document.createElement('button');
+  playAgainBtn.textContent = 'Play Again 🎬';
+  playAgainBtn.className = 'filmster-play-again-btn';
+  playAgainBtn.type = 'button';
+  
+  // Play again btn css
+  playAgainBtn.style.cssText = `
+    background-color: #6b2d8f !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 1rem 3rem !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+    margin: 1.5rem auto 0 auto !important;
+    cursor: pointer !important;
+    display: block !important;
+    font-family: 'Poppins', sans-serif !important;
+  `;
+  
+  playAgainBtn.addEventListener('click', resetFilmsterGame);
+  
+  filmsterFeedback.appendChild(document.createElement('br'));
+  filmsterFeedback.appendChild(playAgainBtn);
+}
+
+function resetFilmsterGame() {
+  // Reset game state
+  filmsterCurrentHint = 0;
+  filmsterTriesLeft = 3;
+  filmsterGameOver = false;
+  
+  // Reset tries display
+  filmsterTriesDisplay.textContent = filmsterTriesLeft;
+  
+  // Reset hints
+  filmsterHint2.classList.add('filmster-locked');
+  filmsterHint2.classList.remove('filmster-unlocked');
+  filmsterHint2.textContent = 'Unlock hint! 🔒';
+  
+  filmsterHint3.classList.add('filmster-locked');
+  filmsterHint3.classList.remove('filmster-unlocked');
+  filmsterHint3.textContent = 'Unlock hint! 🔒';
+  
+  // Reset reveal button
+  filmsterRevealBtn.disabled = false;
+  filmsterRevealBtn.textContent = 'Reveal Another Hint 🔍';
+  
+  // Reset choices
+  filmsterChoices.forEach(choice => {
+    choice.disabled = false;
+    choice.classList.remove('correct', 'incorrect');
+  });
+  
+  // Clear feedback
+  filmsterFeedback.textContent = '';
+  filmsterFeedback.className = 'filmster-feedback';
 }
