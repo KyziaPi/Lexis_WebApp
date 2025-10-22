@@ -228,10 +228,444 @@ nav img.no-text {
     background-color: var(--raildle-main-hover);
 }
 
+/* Replace your existing SNUZZLE section with this updated version */
 
 /* SNUZZLE */
+/* General layout */
+body.snuzzle {
+  font-family: 'Poppins', sans-serif;
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}
 
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 100px); /* Account for navbar */
+  padding: 1rem;
+  gap: 1rem;
+}
 
+/* ====== BOARD ====== */
+.snuzzle-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Rows */
+.snuzzle-row {
+  display: flex;
+  gap: 0.35rem;
+}
+
+/* Pastel row colors */
+.snuzzle-row.pink .snuzzle-tile { background-color: #f9c6cf; }   /* pastel pink */
+.snuzzle-row.blue .snuzzle-tile { background-color: #c9e4f9; }   /* pastel blue */
+.snuzzle-row.yellow .snuzzle-tile { background-color: #f9edc6; } /* pastel yellow */
+
+/* Tiles */
+.snuzzle-tile {
+  width: 55px;
+  height: 55px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* ===== KEYBOARD AND CHARACTERS CONTAINER ===== */
+.snuzzle-characters {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 700px;
+  margin-bottom: 0.5rem;
+}
+
+.snuzzle-left-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.snuzzle-right-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.snuzzle-character {
+  width: 70px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ====== KEYBOARD ====== */
+.snuzzle-keyboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 700px;
+}
+
+.snuzzle-key-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+/* Second row has slight offset for proper keyboard layout */
+.snuzzle-key-row:nth-child(2) {
+  padding-left: 1.5rem;
+}
+
+/* Keys */
+.snuzzle-key {
+  background-color: #6b6b6b;
+  color: white;
+  border: none;
+  padding: 1rem 0.9rem;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  min-width: 50px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.snuzzle-key:hover {
+  background-color: #858585;
+}
+
+.snuzzle-key:active {
+  background-color: #505050;
+  transform: scale(0.95);
+}
+
+.snuzzle-key.wide {
+  min-width: 85px;
+  padding: 1rem 1.3rem;
+  font-size: 0.95rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .snuzzle-characters {
+    max-width: 100%;
+  }
+  
+  .snuzzle-character {
+    width: 50px;
+  }
+  
+  .snuzzle-keyboard {
+    max-width: 100%;
+  }
+  
+  .snuzzle-key {
+    min-width: 35px;
+    padding: 0.8rem 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .snuzzle-key.wide {
+    min-width: 60px;
+    padding: 0.8rem 1rem;
+  }
+  
+  .snuzzle-tile {
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+  }
+}
+
+/* SNUZZLE HELP PAGE */
+.snuzzle-help {
+  min-height: 100vh;
+  padding: 3rem 1rem;
+}
+
+.snuzzle-help__container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.snuzzle-help__title {
+  color: var(--snuzzle-main);
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.snuzzle-help__card {
+  background-color: #ffffff;
+  padding: 3rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 24px rgba(228, 90, 146, 0.2);
+}
+
+.snuzzle-help__welcome {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  text-align: center;
+  color: var(--snuzzle-main);
+}
+
+.snuzzle-help__goal {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  line-height: 1.8;
+  font-family: 'Inter', sans-serif;
+  color: #333;
+  background-color: #fff0f5;
+  padding: 1.5rem;
+  border-radius: 0.8rem;
+  border-left: 5px solid var(--snuzzle-main);
+}
+
+.snuzzle-help__goal strong {
+  color: var(--snuzzle-main);
+  font-weight: 600;
+}
+
+.snuzzle-help__subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  color: var(--snuzzle-main);
+}
+
+.snuzzle-help__steps {
+  font-size: 1.1rem;
+  line-height: 2;
+  margin-bottom: 2rem;
+  padding-left: 2rem;
+  font-family: 'Inter', sans-serif;
+  color: #333;
+}
+
+.snuzzle-help__steps li {
+  margin-bottom: 0.8rem;
+}
+
+.snuzzle-help__steps strong {
+  color: var(--snuzzle-main);
+  font-weight: 600;
+}
+
+/* Example Section */
+.snuzzle-help__examples {
+  background-color: #fafafa;
+  padding: 2rem;
+  border-radius: 1rem;
+  margin: 2rem 0;
+}
+
+.snuzzle-help__example-row {
+  margin-bottom: 2rem;
+}
+
+.snuzzle-help__example-row:last-child {
+  margin-bottom: 0;
+}
+
+.snuzzle-help__example-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.snuzzle-example-tiles {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.snuzzle-example-tiles .snuzzle-tile {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  border-radius: 8px;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+}
+
+.snuzzle-tile--correct {
+  background-color: #6aaa64;
+}
+
+.snuzzle-tile--misplaced {
+  background-color: #c9b458;
+}
+
+.snuzzle-tile--wrong {
+  background-color: #787c7e;
+}
+
+.snuzzle-help__example-text {
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  color: #333;
+  text-align: center;
+  margin: 0;
+}
+
+.snuzzle-badge {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: white;
+  margin-right: 0.3rem;
+}
+
+.snuzzle-badge--green {
+  background-color: #6aaa64;
+}
+
+.snuzzle-badge--yellow {
+  background-color: #c9b458;
+}
+
+.snuzzle-badge--gray {
+  background-color: #787c7e;
+}
+
+.snuzzle-help__tip {
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, #fff0f5 0%, #fce4ec 100%);
+  padding: 1.5rem;
+  border-radius: 0.8rem;
+  border-left: 5px solid #ffb6c1;
+  margin-top: 2rem;
+  line-height: 1.8;
+  font-family: 'Inter', sans-serif;
+  color: #333;
+}
+
+.snuzzle-help__tip strong {
+  color: var(--snuzzle-main);
+  font-weight: 600;
+}
+
+.snuzzle-help__play-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.snuzzle-help__play-btn {
+  background-color: var(--snuzzle-main);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 3rem;
+  font-size: 1.3rem;
+  font-weight: bold;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(228, 90, 146, 0.3);
+}
+
+.snuzzle-help__play-btn:hover {
+  background-color: var(--snuzzle-main-hover);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(228, 90, 146, 0.4);
+  color: white;
+  text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .snuzzle-help {
+    padding: 2rem 0.5rem;
+  }
+
+  .snuzzle-help__title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .snuzzle-help__card {
+    padding: 2rem 1.5rem;
+  }
+
+  .snuzzle-help__welcome {
+    font-size: 1.4rem;
+  }
+
+  .snuzzle-help__goal {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .snuzzle-help__subtitle {
+    font-size: 1.2rem;
+  }
+
+  .snuzzle-help__steps {
+    font-size: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .snuzzle-help__examples {
+    padding: 1.5rem 1rem;
+  }
+
+  .snuzzle-example-tiles .snuzzle-tile {
+    width: 45px;
+    height: 45px;
+    font-size: 1.5rem;
+  }
+
+  .snuzzle-help__example-text {
+    font-size: 0.9rem;
+  }
+
+  .snuzzle-help__tip {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .snuzzle-help__play-btn {
+    padding: 0.9rem 2.5rem;
+    font-size: 1.1rem;
+  }
+}
 
 /* FILMSTER */
 .filmster {
