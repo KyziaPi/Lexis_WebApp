@@ -1,9 +1,95 @@
 {% extends "layout.html" %}
 
+{% block additional_css %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+<link href="/static/css/styles.css" rel="stylesheet">
+{% endblock %}
+
 {% block title %}
-Snuzzle: ???
+Snuzzle: Play. Guess. Smile.
 {% endblock %}
 
 {% block main %}
 
+<main>
+    <!-- Game Board -->
+     <div class="snuzzle-board">
+        <div class="snuzzle-row pink">
+        <div class="snuzzle-tile"></div><div class="snuzzle-tile"></div>
+        <div class="snuzzle-tile"></div><div class="snuzzle-tile"></div>
+        <div class="snuzzle-tile"></div>
+     </div>
+     
+     <div class="snuzzle-row blue">
+        <div class="snuzzle-tile"></div><div class="snuzzle-tile"></div>
+        <div class="snuzzle-tile"></div><div class="snuzzle-tile"></div>
+        <div class="snuzzle-tile"></div>
+     </div>
+
+     <div class="snuzzle-row yellow">
+        <div class="snuzzle-tile"></div><div class="snuzzle-tile"></div>
+        <div class="snuzzle-tile"></div><div class="snuzzle-tile"></div>
+        <div class="snuzzle-tile"></div>
+     </div>
+
+     <div class="snuzzle-row pink">
+        <div class="snuzzle-tile"></div><div class="snuzzle-tile"></div>
+        <div class="snuzzle-tile"></div><div class="snuzzle-tile"></div>
+        <div class="snuzzle-tile"></div>
+     </div>
+
+     <div class="snuzzle-row blue">
+        <div class="snuzzle-tile"></div><div class="snuzzle-tile"></div>
+        <div class="snuzzle-tile"></div><div class="snuzzle-tile"></div>
+        <div class="snuzzle-tile"></div>
+     </div>
+
+     <div class="snuzzle-row yellow">
+        <div class="snuzzle-tile"></div><div class="snuzzle-tile"></div>
+        <div class="snuzzle-tile"></div><div class="snuzzle-tile"></div>
+        <div class="snuzzle-tile"></div>
+     </div>
+    </div>
+
+     <!-- Characters -->
+      <div class="snuzzle-characters">
+         <div class="snuzzle-left-group">
+            <img src="/static/images/snuzzle/bear.png" class="snuzzle-character" alt="bear">
+            <img src="/static/images/snuzzle/bunny.png" class="snuzzle-character" alt="bunny">
+         </div>
+
+      <div class="snuzzle-right-group">
+         <img src="/static/images/snuzzle/flower.png" class="snuzzle-character" alt="flower">
+         <img src="/static/images/snuzzle/frog.png" class="snuzzle-character" alt="frog">
+      </div>
+   </div>
+
+   <!-- Keyboard -->
+    <div class="snuzzle-keyboard">
+      <div class="snuzzle-key-row">
+         <button class="snuzzle-key">Q</button><button class="snuzzle-key">W</button>
+         <button class="snuzzle-key">E</button><button class="snuzzle-key">R</button>
+         <button class="snuzzle-key">T</button><button class="snuzzle-key">Y</button>
+         <button class="snuzzle-key">U</button><button class="snuzzle-key">I</button>
+         <button class="snuzzle-key">O</button><button class="snuzzle-key">P</button>
+      </div>
+
+      <div class="snuzzle-key-row">
+         <button class="snuzzle-key">A</button><button class="snuzzle-key">S</button>
+         <button class="snuzzle-key">D</button><button class="snuzzle-key">F</button>
+         <button class="snuzzle-key">G</button><button class="snuzzle-key">H</button>
+         <button class="snuzzle-key">J</button><button class="snuzzle-key">K</button>
+         <button class="snuzzle-key">L</button>
+      </div>
+
+      <div class="snuzzle-key-row">
+         <button class="snuzzle-key wide">ENTER</button>
+         <button class="snuzzle-key">Z</button><button class="snuzzle-key">X</button>
+         <button class="snuzzle-key">C</button><button class="snuzzle-key">V</button>
+         <button class="snuzzle-key">B</button><button class="snuzzle-key">N</button>
+         <button class="snuzzle-key">M</button>
+         <button class="snuzzle-key wide">DELETE</button>
+      </div>
+   </div>
+</main>
 {% endblock %}

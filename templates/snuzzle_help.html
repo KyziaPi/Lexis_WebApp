@@ -1,12 +1,100 @@
 {% extends "layout.html" %}
 
+{% block additional_css %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+<link href="/static/css/styles.css" rel="stylesheet">
+{% endblock %}
+
 {% block title %}
-Raildle - How To Play
+Snuzzle: How to Play
 {% endblock %}
 
 {% block main %}
-<main>
-    <h1>HOW TO PLAY TEST</h1>
+
+<main class="snuzzle-help">
+    <div class="snuzzle-help__container">
+        <h1 class="snuzzle-help__title">HOW TO PLAY</h1>
+        
+        <div class="snuzzle-help__card">
+            <h2 class="snuzzle-help__welcome">Welcome to Snuzzle, the adorable word-guessing game! 🐻🐰</h2>
+            
+            <p class="snuzzle-help__goal">
+                <strong>Goal:</strong> Guess the secret cute word in 6 tries or less! Each guess gives you clues about which letters are correct and where they belong.
+            </p>
+            
+            <h3 class="snuzzle-help__subtitle">How it works:</h3>
+            
+            <ol class="snuzzle-help__steps">
+                <li>Type a word using your keyboard.</li>
+                <li>Press <strong>ENTER</strong> to submit your guess.</li>
+                <li>After each guess, the tiles will change color to show how close you are:</li>
+            </ol>
+
+            <!-- Sample Output Section -->
+            <div class="snuzzle-help__examples">
+                <h3 class="snuzzle-help__subtitle">Letter Feedback:</h3>
+                
+                <div class="snuzzle-help__example-row">
+                    <div class="snuzzle-help__example-item">
+                        <div class="snuzzle-example-tiles">
+                            <div class="snuzzle-tile snuzzle-tile--correct">S</div>
+                            <div class="snuzzle-tile snuzzle-tile--wrong">N</div>
+                            <div class="snuzzle-tile snuzzle-tile--misplaced">U</div>
+                            <div class="snuzzle-tile snuzzle-tile--wrong">G</div>
+                            <div class="snuzzle-tile snuzzle-tile--wrong">G</div>
+                        </div>
+                        <p class="snuzzle-help__example-text">
+                            <span class="snuzzle-badge snuzzle-badge--green">+</span> <strong>Green (S):</strong> Correct letter in the right position
+                        </p>
+                    </div>
+                </div>
+
+                <div class="snuzzle-help__example-row">
+                    <div class="snuzzle-help__example-item">
+                        <div class="snuzzle-example-tiles">
+                            <div class="snuzzle-tile snuzzle-tile--wrong">H</div>
+                            <div class="snuzzle-tile snuzzle-tile--misplaced">A</div>
+                            <div class="snuzzle-tile snuzzle-tile--wrong">P</div>
+                            <div class="snuzzle-tile snuzzle-tile--wrong">P</div>
+                            <div class="snuzzle-tile snuzzle-tile--misplaced">Y</div>
+                        </div>
+                        <p class="snuzzle-help__example-text">
+                            <span class="snuzzle-badge snuzzle-badge--yellow">?</span> <strong>Yellow (A, Y):</strong> Correct letter but in the wrong position
+                        </p>
+                    </div>
+                </div>
+
+                <div class="snuzzle-help__example-row">
+                    <div class="snuzzle-help__example-item">
+                        <div class="snuzzle-example-tiles">
+                            <div class="snuzzle-tile snuzzle-tile--wrong">C</div>
+                            <div class="snuzzle-tile snuzzle-tile--wrong">U</div>
+                            <div class="snuzzle-tile snuzzle-tile--wrong">D</div>
+                            <div class="snuzzle-tile snuzzle-tile--wrong">D</div>
+                            <div class="snuzzle-tile snuzzle-tile--wrong">L</div>
+                        </div>
+                        <p class="snuzzle-help__example-text">
+                            <span class="snuzzle-badge snuzzle-badge--gray">-</span> <strong>Gray:</strong> Letter not in the word
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <ol class="snuzzle-help__steps" start="4">
+                <li>Keep guessing until you find the word or run out of tries!</li>
+                <li>Use the clues wisely to narrow down your guesses.</li>
+                <li>You win if you guess the correct word within 6 attempts!</li>
+            </ol>
+
+            <div class="snuzzle-help__tip">
+                <strong>💡 Tip:</strong> Start with words that have common letters like A, E, I, O, U, S, T, R, N to get more clues faster! Remember, all the words are cute and wholesome! 🌸
+            </div>
+
+            <div class="snuzzle-help__play-btn-container">
+                <a href="/snuzzle" class="snuzzle-help__play-btn">PLAY THE GAME</a>
+            </div>
+        </div>
+    </div>
 </main>
 
 {% endblock %}
