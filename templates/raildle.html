@@ -22,31 +22,6 @@ Raildle: Guess the HSR Character
         
         <div class="raildle-main-card__dropdown-container">
             <select id="character-select">
-                <option></option>
-                <option value="Remembrance Trailblazer" 
-                        data-img="{{ url_for('static', filename='images/raildle/character/remembrance-trailblazer.png') }}">
-                    Remembrance Trailblazer
-                </option>
-                <option value="Harmony Trailblazer" 
-                        data-img="{{ url_for('static', filename='images/raildle/character/harmony-trailblazer.png') }}">
-                    Harmony Trailblazer
-                </option>
-                <option value="Remembrance Trailblazer1" 
-                        data-img="{{ url_for('static', filename='images/raildle/character/remembrance-trailblazer.png') }}">
-                    Remembrance Trailblazer1
-                </option>
-                <option value="Harmony Trailblazer1" 
-                        data-img="{{ url_for('static', filename='images/raildle/character/harmony-trailblazer.png') }}">
-                    Harmony Trailblazer1
-                </option>
-                <option value="Remembrance Trailblazer2" 
-                        data-img="{{ url_for('static', filename='images/raildle/character/remembrance-trailblazer.png') }}">
-                    Remembrance Trailblazer2
-                </option>
-                <option value="Harmony Trailblazer2" 
-                        data-img="{{ url_for('static', filename='images/raildle/character/harmony-trailblazer.png') }}">
-                    Harmony Trailblazer2
-                </option>
             </select>
         </div> 
 
@@ -60,29 +35,6 @@ Raildle: Guess the HSR Character
                     <th>World/Faction</th>
                     <th class="center-text"><span>Weekly</span><span>Boss</span></th>
                 </tr>
-
-                <!-- loop for each answer -->
-                <!-- <tr>
-                    <td class="table-items--chara-img" id="photo-1">
-                        <img src="{{ url_for('static', filename='images/raildle/character/remembrance-trailblazer.png') }}">
-                    </td>
-                    <td class="table-items--wrong" id="name-1">
-                        Remembrance Trailblazer
-                    </td>
-                    <td class="table-items--correct" id="path-1">
-                        <img src="{{ url_for('static', filename='images/raildle/path/remembrance.webp') }}">
-                    </td>
-                    <td class="table-items--wrong" id="element-1">
-                        <img src="{{ url_for('static', filename='images/raildle/element/ice.webp') }}">
-                    </td>
-                    <td class="table-items--wrong" id="world-faction-1">
-                        Astral Express
-                    </td>
-                    <td class="table-items--correct" id="weekly-boss-1">
-                        <img src="{{ url_for('static', filename='images/raildle/boss_drop/Auspice_Sliver.webp') }}">
-                    </td>
-                </tr> -->
-
             </table>
         </div>
     </div>
@@ -93,20 +45,3 @@ Raildle: Guess the HSR Character
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ url_for('static', filename='js/raildle.js') }}"></script>
 {% endblock %}
-
-
-    <!-- FOR REFERENCE LANG FOR WHEN DONE NA UNG INTERPRETER -->
-            <select id="character-select" placeholder="Enter Character Name">
-                <!-- loop for each characters and icon -->
-                 <!-- {% for name, img_name in characters %} -->
-
-                 <!-- remembrance trailblazer = {{ name }} -->
-                  <!-- remembrance-trailblazer.png = {{ img_name }} -->
-
-                 <!-- test value -->
-                 <option value="Remembrance Trailblazer"
-                 data-img="{{ url_for('static', filename='images/raildle/character/remembrance-trailblazer.png') }}">
-                    Remembrance Trailblazer
-                 </option>
-                 <!-- {% endfor %} -->
-            </select>

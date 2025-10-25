@@ -1,9 +1,10 @@
-$(document).ready(function () {
+$(document).ready(function () {    
+    initGame("raildle", 5);
+
+    // Initialize the dropdown
+    sendCommand("words", "raildle");
     const chosen = [];
     var triesCounter = 0;
-
-    // clear any selected options
-    $('#character-select').val(null).trigger('change');
 
     // initialize select2 after clearing
     $('#character-select').select2({
@@ -16,7 +17,7 @@ $(document).ready(function () {
 
     $('#character-select').on('select2:select', function (e) {
         const selectedId = e.params.data.id;
-        chosen.push(selectedId) //store chosen value
+        
         // disable the selected option so it can't be chosen again
         $(this).find(`option[value="${selectedId}"]`).prop('disabled', true);
         $(this).trigger('change.select2');
@@ -25,43 +26,9 @@ $(document).ready(function () {
         triesCounter++;
         document.getElementById("tries-counter").textContent = triesCounter;
 
-        console.log('Chosen:', chosen);
+        // Update Table
+        sendCommand(`guess ${selectedId}`, "raildle");
         $('#character-select').val(null).trigger('change'); // Clear the selection
-
-        //TODO: values should update according to Lexis' output (will convert to a function in the future)
-        $tableData = 
-            `<tr>
-                <td class="table-items--chara-img" id="photo-1">
-                    <img src="static/images/raildle/character/remembrance-trailblazer.png">
-                </td>
-                <td class="table-items--wrong" id="name-1">
-                    Remembrance Trailblazer
-                </td>
-                <td class="table-items--correct" id="path-1">
-                    <img src="static/images/raildle/path/remembrance.webp">
-                </td>
-                <td class="table-items--wrong" id="element-1">
-                    <img src="static/images/raildle/element/ice.webp">
-                </td>
-                <td class="table-items--wrong" id="world-faction-1">
-                    Astral Express
-                </td>
-                <td class="table-items--correct" id="weekly-boss-1">
-                    <img src="static/images/raildle/boss_drop/Auspice_Sliver.webp">
-                </td>
-            </tr>`;
-        $("#answers-table").append($tableData);
-
-        // TODO: if chosen == secret
-
-        if (chosen.length == 5)  {
-            
-            // TODO: remove dropdown and replace with a play again btn
-            dropdownToBtn();
-            return
-        }
-
-        // TODO: show whether you won/lost in the tries-card
     });
 
    
@@ -105,8 +72,8 @@ function formatOption(option) {
     
     return $(
         `<div style="display: flex; align-items: center; padding: 0.2rem;">
-            <img src="${img}" style="width: 4rem; height: auto; margin-right: .4rem;">
-            <span>${option.text}</span>
+            <img src="${img}" style="width: 4rem; height: auto; margin-right: .4rem; background-color: var(--raildle-chara-img-bg); border: .2rem solid var(--raildle-main);">
+            <span style="font-size: 1.2rem;">${option.text}</span>
         </div>`
     );
 }
@@ -115,13 +82,92 @@ function dropdownToBtn(){
     $('#character-select').next('.select2').hide();
 
     $playAgain = 
-        `<form action="/raildle/play-again" method="post">
+        `<form id="playAgainForm" action="/raildle/play-again" method="post">
             <button class="raildle-tries-card__play-again-btn">Play Again</button>
         </form>`;
 
     $(".raildle-main-card__dropdown-container").append($playAgain);
+    
 }
 
 function btnToDropdown(){
+    $("#playAgainForm").hide();
     $('#character-select').next('.select2').show();
+
+    // post for restart
+}
+
+function addOptions(res){
+    let options = "";
+    for (const [value, name] of Object.entries(res)) {
+    options += `<option value="${value}" 
+                    data-img="static/images/raildle/character/${value}.png">
+                  ${name}
+                </option>`;
+    }
+    $("#character-select").html(options);
+    $('#character-select').val(null).trigger('change');
+}
+
+function addTableData(res){
+    const values = Object.values(res.feedback).map(item => item.value);
+    
+    const feedbacks = {};
+    if (res.feedback && typeof res.feedback === "object") {
+        Object.entries(res.feedback).forEach(([category, item]) => {
+            feedbacks[category] = {
+            value: item.value,
+            status: item.status
+            };
+        });
+    }
+    console.log(feedbacks);
+    $tableData = 
+            `<tr>
+                <td class="table-items--chara-img">
+                    <img src="static/images/raildle/character/${res['character']['value']}.png">
+                </td>
+                <td class="table-items--${res['character']['status']}">
+                    ${res['character']['name']}
+                </td>
+                <td class="table-items--${feedbacks["Path"].status}">
+                    <img src="static/images/raildle/path/${feedbacks["Path"].value}.webp">
+                </td>
+                <td class="table-items--${feedbacks["Path"].status}">
+                    <img src="static/images/raildle/element/${feedbacks["Element"].value}.webp">
+                </td>
+                <td class="table-items--${feedbacks["World/Faction"].status}">
+                    ${feedbacks["World/Faction"].value}
+                </td>
+                <td class="table-items--${feedbacks["Weekly Boss"].status}">
+                    <img src="static/images/raildle/boss_drop/${feedbacks["Weekly Boss"].value}.webp">
+                </td>
+            </tr>`;
+    $("#answers-table").append($tableData);
+
+    if (res["result"] == "win") {
+        raildleWin(); 
+        return;
+    }
+    
+    if (res["remaining"] == 0) {
+        raildleLose();
+        return;
+    }
+}
+
+function raildleWin() {
+    dropdownToBtn();
+    resetGame("raildle");
+    console.log(isGameActive('raildle'));
+
+
+    // HTML updates
+}
+
+function raildleLose() {
+    dropdownToBtn();
+    resetGame("raildle");
+    console.log(isGameActive('raildle'));
+    // HTML updates
 }

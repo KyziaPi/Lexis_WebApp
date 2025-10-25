@@ -239,7 +239,7 @@ body.snuzzle {
   padding: 0;
 }
 
-main {
+main.snuzzle {
   display: flex;
   flex-direction: column;
   align-items: center;

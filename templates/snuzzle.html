@@ -11,7 +11,7 @@ Snuzzle: Play. Guess. Smile.
 
 {% block main %}
 
-<main>
+<main class="snuzzle">
     <!-- Game Board -->
      <div class="snuzzle-board">
         <div class="snuzzle-row pink">
@@ -92,4 +92,9 @@ Snuzzle: Play. Guess. Smile.
       </div>
    </div>
 </main>
+
+{% block additional_scripts %}
+  <script src="{{ url_for('static', filename='js/snuzzle.js') }}"></script>
+{% endblock %}
+
 {% endblock %}
