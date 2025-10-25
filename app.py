@@ -108,105 +108,21 @@ def run(game):
         # Mark game session as active
         if not session.get(game):
             session[game] = True
-            
-        print(f"Before: {session.get(f"{game}_loaded")}")
-        # Replay session state on first command after page load
-        replayed_data = None
-        if session.get(f"{game}_loaded"):
-            session[f"{game}_loaded"] = False
-            replayed_data = replay_session_state(game)
-            print(f"During: {session.get(f"{game}_loaded")}")
-
-        print(f"After: {session.get(f"{game}_loaded")}")
-
+        
         # Route to specific handlers based on command
         if command == "show":
-            result = handle_show(game)
+            return handle_show(game)
         elif command == "words":
-            result = handle_words(game)
+            return handle_words(game)
         elif command.startswith("guess"):
-            result = process_guess(game, command)
+            return handle_guess(game, command)
         else:
-            result = handle_generic_command(command)
-            
-        # If we replayed data, include it in the response
-        if replayed_data:
-            response_data = result.get_json()
-            response_data["replayed"] = replayed_data
-            return jsonify(response_data)
-        
-        return result
+            return handle_generic_command(command)
 
     except InterpreterError as e:
         return jsonify({"status": "error", "message": str(e)}), 400
     except Exception as e:
         return jsonify({"status": "error", "message": f"Runtime error: {e}"}), 500
-
-
-def replay_session_state(game):
-    """Replay session state for specific games"""
-    secret_key = f"{game}_secret_word"
-    guesses_key = f"{game}_guesses"
-    
-    replayed_guesses = []
-    
-    # Rerun the current session if it exists
-    secret = session.get(secret_key)
-    if secret:
-        interp.run_once(f"word {secret}")
-        print(f"Replayed secret word: {secret}")
-    
-    # Replay guesses (if any)
-    guesses = session.get(guesses_key, [])
-    if guesses:
-        # Temporarily store guesses and clear session to avoid duplication
-        temp_guesses = guesses.copy()
-        session[guesses_key] = []
-    
-        # Replay each guess and collect results
-        for guess in temp_guesses:
-            command = f"guess {guess}"
-            try:
-                result = process_guess(game, command)
-                if result:
-                    replayed_guesses.append(result)
-                    print(f"Replayed guess: {guess}")
-            except Exception as e:
-                print(f"Error replaying guess {guess}: {e}")
-    
-    return replayed_guesses
-
-
-def process_guess(game, command):
-    """Core guess processing logic (returns data object)"""
-    result = interp.run_once(command)
-    
-    # Only process successful guesses
-    if result.startswith("Error:"):
-        return None
-    
-    # Store the guess
-    save_guess(game, command)
-    
-    # Parse result
-    result = json.loads(result)
-    
-    if game == "raildle":
-        return format_raildle_guess(result, command)
-    
-    return result
-
-
-def handle_guess(game, command):
-    """Handle 'guess' command - process and return JSON response"""
-    result = process_guess(game, command)
-    
-    if result is None:
-        # Handle error case
-        error_result = interp.run_once(command)
-        return jsonify(error_result)
-    
-    return jsonify(result)
 
 
 def handle_show(game):
@@ -215,7 +131,6 @@ def handle_show(game):
     secret_word = result.split(":", 1)[1].strip()
     secret_key = f"{game}_secret_word"
     session[secret_key] = secret_word
-    print(session[secret_key])
     return jsonify("Secret word has been saved.")
 
 
@@ -225,6 +140,26 @@ def handle_words(game):
     
     if game == "raildle":
         return format_raildle_words(game, result)
+    
+    return jsonify(result)
+
+
+def handle_guess(game, command):
+    """Handle 'guess' command - process and store guess"""
+    result = interp.run_once(command)
+    
+    # Only process successful guesses
+    if result.startswith("Error:"):
+        return jsonify(result)
+    
+    # Store the guess
+    save_guess(game, command)
+    
+    # Parse and format result
+    result = json.loads(result)
+    
+    if game == "raildle":
+        return format_raildle_guess(result, command)
     
     return jsonify(result)
 
