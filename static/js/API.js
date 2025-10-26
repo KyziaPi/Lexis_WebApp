@@ -38,11 +38,14 @@ function handleRaildleResponse(cmd, response) {
 async function initGame(game, max_guesses, secret_word = "") {
     try {
         // Load game file and start
-        sendCommand(`file ${game}`, game);
-        sendCommand("start", game);
-        sendCommand(`max_guesses ${max_guesses}`, game);
-        sendCommand(`word ${secret_word}`, game);
-        sendCommand("show", game);   
+        await sendCommand(`file ${game}`, game);
+        await sendCommand("start", game);
+        await sendCommand(`max_guesses ${max_guesses}`, game);
+        await sendCommand(`word ${secret_word}`, game);
+        await sendCommand("show", game);
+        await sendCommand("words", game);
+        
+        return 
     } catch (err) {
         console.error("Error starting game:", err);
     }

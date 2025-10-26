@@ -1,12 +1,9 @@
 $(document).ready(function () {    
+    // Initialize game features
     initGame("raildle", 5);
-
-    // Initialize the dropdown
-    sendCommand("words", "raildle");
-    const chosen = [];
     var triesCounter = 0;
 
-    // initialize select2 after clearing
+    // Initialize select2
     $('#character-select').select2({
         placeholder: "Enter Character Name",
         allowClear: true,
@@ -14,6 +11,10 @@ $(document).ready(function () {
         templateResult: formatOption,
         matcher: matchStart // Custom matcher for start-of-word matching
     });
+
+    // Show winstreak
+    $("#winstreak-counter").text(getWinstreak("raildle"));
+    console.log(getWinstreak("raildle"));
 
     $('#character-select').on('select2:select', function (e) {
         const selectedId = e.params.data.id;
@@ -127,13 +128,13 @@ function addTableData(res){
                 <td class="table-items--chara-img">
                     <img src="static/images/raildle/character/${res['character']['value']}.png">
                 </td>
-                <td class="table-items--${res['character']['status']}">
+                <td class="table-items--${res['character']['status']}" style="font-size:1.2rem; font-weight: bold;">
                     ${res['character']['name']}
                 </td>
                 <td class="table-items--${feedbacks["Path"].status}">
                     <img src="static/images/raildle/path/${feedbacks["Path"].value}.webp">
                 </td>
-                <td class="table-items--${feedbacks["Path"].status}">
+                <td class="table-items--${feedbacks["Element"].status}">
                     <img src="static/images/raildle/element/${feedbacks["Element"].value}.webp">
                 </td>
                 <td class="table-items--${feedbacks["World/Faction"].status}">
@@ -143,31 +144,48 @@ function addTableData(res){
                     <img src="static/images/raildle/boss_drop/${feedbacks["Weekly Boss"].value}.webp">
                 </td>
             </tr>`;
-    $("#answers-table").append($tableData);
+    $("#answers-table tr:first").after($tableData);
 
     if (res["result"] == "win") {
-        raildleWin(); 
+        raildleEnd(true, res["secret"]["name"], res["secret"]["value"]); 
         return;
     }
     
-    if (res["remaining"] == 0) {
-        raildleLose();
+    if (res["result"] == "lose") {
+        raildleEnd(false, res["secret"]["name"], res["secret"]["value"]);
         return;
     }
 }
 
-function raildleWin() {
+function raildleEnd(isWin, secret_name, secret_value) {
     dropdownToBtn();
-    resetGame("raildle");
-    console.log(isGameActive('raildle'));
+    
+    // Handle winstreak based on result
+    if (isWin) {
+        incrementWinstreak("raildle");
+    } else {
+        resetWinstreak("raildle");
+    }
+    
+    // Show updated winstreak
+    $("#winstreak-counter").text(getWinstreak("raildle"));
+    
+    // You can customize the HTML based on win/lose
+    htmlUpdate =
+        `<div class="raildle-tries-card__result-container">
+            <div class="raildle-tries-card__img-result-container">
+                <img src="static/images/raildle/character/${secret_value}.png">
+            </div>`;
 
-
-    // HTML updates
-}
-
-function raildleLose() {
-    dropdownToBtn();
-    resetGame("raildle");
-    console.log(isGameActive('raildle'));
-    // HTML updates
+    htmlUpdate += isWin ? 
+            `<div class="raildle-tries-card__result-bg result-bg-win">
+                    <h1 class="raildle-tries-card__title">You won!</h1>
+                    <h1 class="raildle-tries-card__title">The character was ${secret_name}</h1>
+            </div>` : 
+            `<div class="raildle-tries-card__result-bg result-bg-lose">
+                    <h1 class="raildle-tries-card__title">You lost! </h1>
+                    <h1 class="raildle-tries-card__title">The character was ${secret_name}</h1>
+        </div>`;
+    
+    $(".raildle-tries-card").append(htmlUpdate);
 }

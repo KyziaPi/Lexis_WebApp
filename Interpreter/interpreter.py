@@ -129,8 +129,9 @@ class Interpreter:
                 if len(self.secret_row) > 1:
                     if self.hint_index < len(self.secret_row) - 1:
                         self.hint_index += 1
-                        extra = self.secret_row[self.hint_index]
-            result = {"result": "continue", "feedback": feedback, "remaining": self.remaining_guesses}
+                        extra = self.secret_row[self.hint_index]     
+            result = {"feedback": feedback, "remaining": self.remaining_guesses}
+            result["result"] = "continue" if self.remaining_guesses > 0 else "lose"  
             if extra:
                 result["hint"] = extra
             return json.dumps(result)

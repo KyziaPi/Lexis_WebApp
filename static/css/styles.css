@@ -1078,7 +1078,7 @@ body.raildle {
 }
 
 .raildle-main-card__table img {
-    height: 4.9rem;
+    height: 5rem;
     width: auto;
 }
 
@@ -1102,11 +1102,70 @@ td.table-items--wrong {
     border: .5rem solid rgba(116, 116, 116, 0.9);
     position: relative;
     z-index: 1;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
+
 .raildle-tries-card__title {
     color: #fff;
     text-align: center;
     font-size: 1.5rem;
+}
+
+.raildle-tries-card__winstreak {
+    color: #000;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.raildle-tries-card__winstreak-bg {
+    padding: .5rem 3rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: .5rem;
+    border: .35rem solid rgba(116, 116, 116, 0.9);
+    margin: 0 0 .5rem 0;
+}
+
+.raildle-tries-card__result-container {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 1rem 1rem 0 1rem;
+}
+
+.raildle-tries-card__result-bg {
+    padding: 1rem;
+    border-radius: .5rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    border: .35rem solid var(--lexis);
+}
+
+.result-bg-win {
+    background-color: var(--raildle-correct-bg);
+}
+
+.result-bg-lose {
+    background-color: var(--raildle-wrong-bg);
+}
+
+.raildle-tries-card__img-result-container {
+    border: .35rem solid var(--lexis);
+    background-color: var(--raildle-chara-img-bg);
+    width: auto;
+    height: auto;
+    border-radius: .5rem;
+}
+
+.raildle-tries-card__img-result-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
 }
 
 .raildle-tries-card__play-again-btn {
@@ -1152,7 +1211,13 @@ td.table-items--wrong {
     margin: 2rem 10rem;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1146px) {
+    html {
+      font-size: 62.5%;
+    }
+}
+
+@media (max-width: 712px) {
     .raildle-tries-card {
         margin: 2rem 3rem;
         padding: 2rem 0;
@@ -1170,10 +1235,18 @@ td.table-items--wrong {
 
     .raildle-main-card__table {
         margin: 1rem;
-        width: 100%
+        width: 100%;
+        display: flex;
+        justify-content: center;
     }
 
     .raildle-help-info-container {
         margin: 2rem 0;
+    }
+}
+
+@media (max-width: 398px) {
+    html {
+      font-size: 43.75%;
     }
 }

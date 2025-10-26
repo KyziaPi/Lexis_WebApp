@@ -2,6 +2,9 @@ from flask import Flask, request, jsonify, render_template, abort, redirect, ses
 import json
 from os import urandom
 import re
+from queue import Queue
+import threading
+import time
 from Interpreter import Interpreter, InterpreterError
 
 app = Flask(__name__)
@@ -68,7 +71,6 @@ def tutorialPage(game):
 # Game: Snuzzle
 @app.route("/snuzzle", methods=["GET"])
 def snuzzle():
-    
     if request.method == "GET":       
         return render_template(htmls["snuzzle"], page="snuzzle")
 
@@ -104,10 +106,6 @@ def run(game):
         command = data.get("command", "").strip()
         if not command:
             return jsonify({"status": "error", "message": "No command provided"}), 400
-
-        # Mark game session as active
-        if not session.get(game):
-            session[game] = True
         
         # Route to specific handlers based on command
         if command == "show":
@@ -131,6 +129,7 @@ def handle_show(game):
     secret_word = result.split(":", 1)[1].strip()
     secret_key = f"{game}_secret_word"
     session[secret_key] = secret_word
+    
     return jsonify("Secret word has been saved.")
 
 
@@ -152,14 +151,11 @@ def handle_guess(game, command):
     if result.startswith("Error:"):
         return jsonify(result)
     
-    # Store the guess
-    save_guess(game, command)
-    
     # Parse and format result
     result = json.loads(result)
     
     if game == "raildle":
-        return format_raildle_guess(result, command)
+        return format_raildle_guess(result, command, game)
     
     return jsonify(result)
 
@@ -171,15 +167,6 @@ def handle_generic_command(command):
 
 
 # Helper functions
-
-def save_guess(game, command):
-    """Store guessed word in session"""
-    guesses_key = f"{game}_guesses"
-    session.setdefault(guesses_key, [])
-    
-    guessed_word = command.split(" ", 1)[1] if " " in command else ""
-    if guessed_word:
-        session[guesses_key].append(guessed_word)
 
 
 def format_raildle_words(game, result):
@@ -202,7 +189,7 @@ def format_raildle_words(game, result):
     return jsonify(session.get(words_key, {}))
 
 
-def format_raildle_guess(result, command):
+def format_raildle_guess(result, command, game):
     """Format guess result for Raildle game"""
     guessed_word = command.split(" ", 1)[1] if " " in command else ""
     
@@ -244,8 +231,18 @@ def format_raildle_guess(result, command):
     # Set character status
     result["character"]["status"] = "wrong" if result["result"] == "continue" else "correct"
     
+    # Set secret word if result is win/lose
+    if result["result"] == "win" or result["result"] == "lose":
+        secret_value = session.get(f"{game}_secret_word")
+        result["secret"] = {"value": secret_value}
+        result["secret"]["name"] = re.sub(r"(?<!^)(?=[A-Z0-9])", " ", secret_value) if re.search(r"[A-Z0-9]", secret_value[1:]) else secret_value
+    
     return jsonify(result)
 
+@app.route("/reset_game/<game>")
+def reset_game(game):
+    session.pop(f"{game}_commands", None)
+    return "Game session cleared"
 
 if __name__ == "__main__":
     app.run(debug=True)
