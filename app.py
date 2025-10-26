@@ -2,9 +2,6 @@ from flask import Flask, request, jsonify, render_template, abort, redirect, ses
 import json
 from os import urandom
 import re
-from queue import Queue
-import threading
-import time
 from Interpreter import Interpreter, InterpreterError
 
 app = Flask(__name__)
