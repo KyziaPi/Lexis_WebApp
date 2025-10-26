@@ -1,8 +1,8 @@
 // Load saved state or initialize defaults
 const savedState = JSON.parse(localStorage.getItem('gameState')) || {
-  snuzzle: { winstreak: 0 },
-  filmster: { winstreak: 0 },
-  raildle: { winstreak: 0 },
+  snuzzle: { active: false, winstreak: 0, over: false },
+  filmster: { active: false, winstreak: 0, over: false },
+  raildle: { active: false, winstreak: 0, over: false },
 };
 
 // Helper function to save state
@@ -14,8 +14,15 @@ function saveGameState() {
 const gameState = savedState;
 
 // Helper functions
-function incrementWinstreak(game) {
+function setGameActive(game, isActive) {
   if (gameState[game]) {
+    gameState[game].active = isActive;
+    saveGameState();
+  }
+}
+
+function incrementWinstreak(game) {
+  if (gameState[game] && !(isGameOver(game))) {
     gameState[game].winstreak += 1;
     saveGameState();
   }
@@ -26,6 +33,21 @@ function resetWinstreak(game) {
     gameState[game].winstreak = 0;
     saveGameState();
   }
+}
+
+function setGameOver(game, isOver) {
+  if (gameState[game]) {
+    gameState[game].over = isOver;
+    saveGameState();
+  }
+}
+
+function isGameActive(game) {
+  return gameState[game] ? gameState[game].active : false;
+}
+
+function isGameOver(game) {
+  return gameState[game] ? gameState[game].over : false;
 }
 
 function getWinstreak(game) {
@@ -39,4 +61,4 @@ function getWinstreak(game) {
 
 // setGameActive('filmster', false);
 // resetWinstreak('filmster');
-// console.log(getWinstreak('filmster')); // 0
+// console.log(isGameActive('filmster')); // false

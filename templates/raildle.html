@@ -13,18 +13,18 @@ Raildle: Guess the HSR Character
 
 <main>
     <div class="raildle-tries-card">
+        <h1 class="raildle-tries-card__title">Guess The HSR Character</h1>
         <div class="raildle-tries-card__winstreak-bg">
-            <h1 class="raildle-tries-card__winstreak">Win Streak: <span id="winstreak-counter"></span></h1>
+            <h2 class="raildle-tries-card__winstreak">Win Streak: <span id="winstreak-counter"></span></h2>
         </div>
-        <h1 class="raildle-tries-card__title">Tries: <span id="tries-counter">0</span>/5</h1>
+        <h2 class="raildle-tries-card__subtitle">Tries: <span id="tries-counter">0</span>/5</h2>
     </div>
     
-    <div class="raildle-main-card">
-        <h1 class="raildle-main-card__title">Guess the Honkai Star Rail Character</h1>
-        
+    <div class="raildle-main-card">       
         <div class="raildle-main-card__dropdown-container">
             <select id="character-select">
             </select>
+            <button class="raildle-tries-card__play-again-btn" id="reset_game" style="display: none;">Play Again</button>
         </div> 
 
         <div class="raildle-main-card__table-container">

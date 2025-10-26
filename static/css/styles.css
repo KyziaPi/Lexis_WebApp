@@ -1013,7 +1013,6 @@ body.raildle {
 }
 
 .raildle-main-card__dropdown-container {
-    margin: 1rem 0;
     display: flex;
     justify-content: center;
     z-index: 100;
@@ -1110,21 +1109,28 @@ td.table-items--wrong {
 .raildle-tries-card__title {
     color: #fff;
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.7rem;
+}
+
+.raildle-tries-card__subtitle {
+    color: #fff;
+    text-align: center;
+    font-size: 1.2rem;
 }
 
 .raildle-tries-card__winstreak {
     color: #000;
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
 
 .raildle-tries-card__winstreak-bg {
     padding: .5rem 3rem;
+    max-width: 15rem;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: .5rem;
     border: .35rem solid rgba(116, 116, 116, 0.9);
-    margin: 0 0 .5rem 0;
+    margin: .5rem 0;
 }
 
 .raildle-tries-card__result-container {
@@ -1144,6 +1150,7 @@ td.table-items--wrong {
     flex-direction: column;
     text-align: center;
     border: .35rem solid var(--lexis);
+    max-width: 25rem;
 }
 
 .result-bg-win {
@@ -1209,6 +1216,11 @@ td.table-items--wrong {
 
 .raildle-help-info-container {
     margin: 2rem 10rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @media (max-width: 1146px) {
