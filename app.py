@@ -239,10 +239,6 @@ def format_raildle_guess(result, command, game):
     
     return jsonify(result)
 
-@app.route("/reset_game/<game>")
-def reset_game(game):
-    session.pop(f"{game}_commands", None)
-    return "Game session cleared"
 
 if __name__ == "__main__":
     app.run(debug=True)
