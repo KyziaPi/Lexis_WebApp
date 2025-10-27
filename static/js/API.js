@@ -69,7 +69,7 @@ function updateTriesCount(tries, element) {
 }
 
 // Game initialization
-async function initGame(game, max_guesses, secret_word = "") {
+async function initGame(game, max_guesses = 6, secret_word = "") {
     try {
         //setGameActive(game, false);
 
