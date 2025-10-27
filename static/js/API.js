@@ -116,7 +116,7 @@ function resetGame(game) {
             success: function(res) {
                 // Clear local state
                 setGameActive(game, false)
-                setGameOver("raildle", false)
+                setGameOver(game, false)
             },
             error: function(err) {
                 console.error(`Error clearing session for "${game}":`, err);

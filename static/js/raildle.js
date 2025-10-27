@@ -18,7 +18,7 @@ $(document).ready(function () {
     });
 
     // Show winstreak
-    $("#winstreak-counter").text(getWinstreak("raildle"));
+    $("#winstreak-counter").text(getWinstreak(game));
 
     $('#character-select').on('select2:select', function (e) {
         const selectedId = e.params.data.id;
@@ -29,7 +29,7 @@ $(document).ready(function () {
         $(this).trigger('change.select2');
 
         // Update Table
-        sendCommand(`guess ${selectedId}`, "raildle");
+        sendCommand(`guess ${selectedId}`, game);
         $('#character-select').val(null).trigger('change'); // Clear the selection
     });
 
