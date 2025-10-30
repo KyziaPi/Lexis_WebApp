@@ -239,6 +239,8 @@ def handle_words(game):
     
     if game == "raildle":
         return format_raildle_words(game, result)
+    elif game == "filmster":
+        return format_filmster_words(game, result)
     
     return jsonify(result)
 
@@ -264,6 +266,8 @@ def handle_guess(game, command):
     
     if game == "raildle":
         return format_raildle_guess(result, command, game)
+    elif game == "filmster":
+        return format_filmster_guess(result, command, game)
     
     return jsonify(result)
 
@@ -344,6 +348,68 @@ def format_raildle_guess(result, command, game):
         secret_value = session.get(f"{game}_secret_word")
         result["secret"] = {"value": secret_value}
         result["secret"]["name"] = re.sub(r"(?<!^)(?=[A-Z0-9])", " ", secret_value) if re.search(r"[A-Z0-9]", secret_value[1:]) else secret_value
+    
+    return jsonify(result)
+
+# Helper functions for Filmster
+
+def format_filmster_words(game, result):
+    """Format word list for Filmster game - return movies with their hints"""
+    # The interpreter should return something like:
+    # "words: Barbie, Titanic, TheLionKing, ..."
+    
+    # Parse the result to get movie keys
+    response = result.split(":", 1)[1] if ":" in result else result
+    movie_keys = [w.strip() for w in response.split(",")]
+    
+    # Now we need to read the word bank file to get the hints
+    words_with_hints = {}
+    
+    try:
+        # Read the filmster word bank file from WordBanks folder
+        with open('WordBanks/filmster', 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+        
+        # Parse each line (skip header which starts with "word |")
+        for line in lines:
+            line = line.strip()
+            if not line or line.startswith('word |'):
+                continue
+                
+            if '|' in line:
+                parts = [part.strip() for part in line.split('|')]
+                if len(parts) >= 4:
+                    movie_key = parts[0]
+                    # Only include movies that are in the interpreter's word list
+                    if movie_key in movie_keys:
+                        hints = [parts[1], parts[2], parts[3]]
+                        words_with_hints[movie_key] = hints
+        
+        print(f"Loaded {len(words_with_hints)} movies with hints")
+        
+    except FileNotFoundError:
+        print("Error: filmster word bank file not found at WordBanks/filmster")
+        # Return empty dict or placeholder data
+        for key in movie_keys:
+            words_with_hints[key] = ["Hint 1", "Hint 2", "Hint 3"]
+    except Exception as e:
+        print(f"Error reading word bank: {e}")
+        for key in movie_keys:
+            words_with_hints[key] = ["Hint 1", "Hint 2", "Hint 3"]
+    
+    return jsonify(words_with_hints)
+
+
+def format_filmster_guess(result, command, game):
+    """Format guess result for Filmster game"""
+    guessed_word = command.split(" ", 1)[1] if " " in command else ""
+    
+    # For filmster, we just need to return the result with secret if game is over
+    if result["result"] == "win" or result["result"] == "lose":
+        secret_value = session.get(f"{game}_secret_word")
+        # Add spaces to PascalCase names for display
+        display_name = re.sub(r"(?<!^)(?=[A-Z])", " ", secret_value)
+        result["secret"] = {"value": secret_value, "name": display_name}
     
     return jsonify(result)
 
