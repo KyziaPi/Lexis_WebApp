@@ -230,6 +230,12 @@ def handle_show(game):
         session[f"{game}_commands"] = game_commands
         session.modified = True
         
+    # REMOVE AFTER DONE IMPLEMENTING FEATURES
+    if game == "filmster":
+        # Edit words in session to include secret word and 3 random words
+        filmster_edit_words(game, secret_word)
+        return jsonify(session.get(f"{game}_words", {}))       
+                
     return jsonify("Secret word has been saved.")
 
 
@@ -237,10 +243,8 @@ def handle_words(game):
     """Handle 'words' command - retrieve and format word list"""
     result = interp.run_once("words")
     
-    if game == "raildle":
-        return format_raildle_words(game, result)
-    elif game == "filmster":
-        return format_filmster_words(game, result)
+    if game == "raildle" or game == 'filmster':
+        return format_words(game, result)
     
     return jsonify(result)
 
@@ -281,8 +285,8 @@ def handle_generic_command(command):
 # Helper functions
 
 
-def format_raildle_words(game, result):
-    """Format word list for Raildle game"""
+def format_words(game, result):
+    """Format word list for Raildle/Filmster game"""
     response = result.split(":", 1)[1]
     keys = [w.strip() for w in response.split(",")]
     keys.sort()
@@ -351,51 +355,6 @@ def format_raildle_guess(result, command, game):
     
     return jsonify(result)
 
-# Helper functions for Filmster
-
-def format_filmster_words(game, result):
-    """Format word list for Filmster game - return movies with their hints"""
-    
-    # Parse the result to get movie keys
-    response = result.split(":", 1)[1] if ":" in result else result
-    movie_keys = [w.strip() for w in response.split(",")]
-    
-    words_with_hints = {}
-    
-    try:
-        # Read the filmster word bank file from WordBanks folder
-        with open('WordBanks/filmster', 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-        
-        # Parse each line
-        for line in lines:
-            line = line.strip()
-            if not line or line.startswith('word |'):
-                continue
-                
-            if '|' in line:
-                parts = [part.strip() for part in line.split('|')]
-                if len(parts) >= 4:
-                    movie_key = parts[0]
-                    # Only include movies that are in the interpreter's word list
-                    if movie_key in movie_keys:
-                        hints = [parts[1], parts[2], parts[3]]
-                        words_with_hints[movie_key] = hints
-        
-        print(f"Loaded {len(words_with_hints)} movies with hints")
-        
-    except FileNotFoundError:
-        print("Error: filmster word bank file not found at WordBanks/filmster")
-        # Return empty dict or placeholder data
-        for key in movie_keys:
-            words_with_hints[key] = ["Hint 1", "Hint 2", "Hint 3"]
-    except Exception as e:
-        print(f"Error reading word bank: {e}")
-        for key in movie_keys:
-            words_with_hints[key] = ["Hint 1", "Hint 2", "Hint 3"]
-    
-    return jsonify(words_with_hints)
-
 
 def format_filmster_guess(result, command, game):
     """Format guess result for Filmster game"""
@@ -410,6 +369,34 @@ def format_filmster_guess(result, command, game):
     
     return jsonify(result)
 
+
+def filmster_edit_words(game, secret_word):
+    """Edit Filmster words in session to include secret word and 3 random words"""
+    import random
+    words_key = f"{game}_words"
+    all_words = list(session.get(words_key, {}).keys())
+    
+    # Ensure secret word is included
+    if secret_word not in all_words:
+        all_words.append(secret_word)
+    
+    # Select 3 random words excluding the secret word
+    random_words = random.sample([w for w in all_words if w != secret_word], 3)
+    
+    # Final list includes secret word and 3 random words
+    final_words = [secret_word] + random_words
+    final_words.sort()
+    
+    # Update session words
+    formatted_words = {}
+    for k in final_words:
+        if re.search(r"[A-Z0-9]", k[1:]):
+            spaced = re.sub(r"(?<!^)(?=[A-Z0-9])", " ", k)
+            formatted_words[k] = spaced
+        else:
+            formatted_words[k] = k
+    
+    session[f"{game}_words"] = formatted_words
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -48,9 +48,12 @@ function handleCommandResponse(cmd, game, response) {
     if (game === "raildle") {
         handleRaildleResponse(cmd, response);
     }
+
+    else if (game === "filmster") { 
+        handleFilmsterResponse(cmd, response); 
+    }
     // Add other game handlers here as needed
     // else if (game === "snuzzle") { handleSnuzzleResponse(cmd, response); }
-    // else if (game === "filmster") { handleFilmsterResponse(cmd, response); }
 }
 
 // Game-specific response handlers
@@ -59,6 +62,18 @@ function handleRaildleResponse(cmd, response) {
         addOptions(response);
     } else if (cmd.startsWith("guess")) {
         addTableData(response);
+        updateTriesCount(response.tries, "#tries-counter");
+    }
+}
+
+function handleFilmsterResponse(cmd, response) {
+    if (cmd === "show") {
+        // EDIT THIS, YUNG VALUE NG NASA BUTTONS SHOULD CORRESPOND SA RESULT
+        console.log(response);
+    }
+    if (cmd.startsWith("guess")) {
+        console.log(response);
+        // EDIT THIS, LAGAY MO DITO UNG FUNCTION THAT UPDATES THE HTML AFTER MAGCLICK NG BUTTON
         updateTriesCount(response.tries, "#tries-counter");
     }
 }
@@ -88,8 +103,8 @@ async function initGame(game, max_guesses = 6, secret_word = "") {
             "start",
             `max_guesses ${max_guesses}`,
             `word ${secret_word}`,
-            "show",
-            "words"
+            "words",
+            "show"
         ];
 
         // Set game as active
