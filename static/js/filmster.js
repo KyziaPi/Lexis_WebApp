@@ -9,6 +9,7 @@ $(document).ready(function () {
   var triesLeft = 3;
   var gameOver = false;
   var hintIndex = 0;
+  var game = "filmster";
 
   // DOM elements
   const filmsterHint1 = document.getElementById('filmster-hint1');
@@ -17,6 +18,7 @@ $(document).ready(function () {
   const filmsterFeedback = document.getElementById('filmster-feedback');
   const filmsterTriesDisplay = document.getElementById('filmster-triesLeft');
   const filmsterChoicesContainer = document.querySelector('.filmster-choices');
+  const filmsterWinstreakDisplay = document.getElementById('filmster-winstreak');
 
   startNewGame();
 
@@ -73,6 +75,9 @@ $(document).ready(function () {
       
       // Generate and display choices
       generateMovieChoices();
+
+      // Update win streak
+      updateWinstreakDisplay();
       
     } catch (error) {
       console.error("Error starting game:", error);
@@ -162,6 +167,7 @@ $(document).ready(function () {
       gameOver = true;
       disableAllChoices();
       incrementWinstreak(game);
+      updateWinstreakDisplay();
       setGameOver(game, true);
       showPlayAgainButton();
     } else {
@@ -198,6 +204,7 @@ $(document).ready(function () {
         disableAllChoices();
         highlightCorrectAnswer();
         resetWinstreak(game);
+        updateWinstreakDisplay();
         setGameOver(game, true);
         showPlayAgainButton();
       }
@@ -253,6 +260,11 @@ $(document).ready(function () {
     // Clear choices
     filmsterChoicesContainer.innerHTML = '';
   }
+
+function updateWinstreakDisplay() {
+  const streak = getWinstreak(game);
+  filmsterWinstreakDisplay.textContent = streak;
+}
 
 function showPlayAgainButton() {
   const playAgainBtn = document.createElement('button');

@@ -701,6 +701,15 @@ main.snuzzle {
   color: #000;
 }
 
+.filmster-streak-info {
+  position: absolute;
+  top: 5rem;
+  right: 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffcc00;
+}
+
 .filmster-hint {
   width: 90%;
   max-width: 550px;
