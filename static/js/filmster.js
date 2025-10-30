@@ -34,21 +34,17 @@ $(document).ready(function () {
       
       // Parse the word bank to get movies and hints
       if (initResponse && initResponse.results) {
-        // Find "words" command result to get all movies
         const wordsResult = initResponse.results.find(r => r.command === "words");
+
         if (wordsResult && wordsResult.result) {
-          // The result should be the word bank data
           parseWordBank(wordsResult.result);
         }
         
-        // Find "show" command to get the secret word details
         const showResult = initResponse.results.find(r => r.command === "show");
         if (showResult && showResult.result && showResult.result.name) {
-          // The secret word's key should be in the response
           currentMovie = showResult.result.name;
         }
         
-        // If we didn't get it from show, try the word command
         if (!currentMovie) {
           const wordResult = initResponse.results.find(r => r.command.startsWith("word"));
           if (wordResult && wordResult.command) {
@@ -60,7 +56,7 @@ $(document).ready(function () {
         }
       }
       
-      // If still no currentMovie, pick a random one
+      // Random movie
       if (!currentMovie || !allMovies[currentMovie]) {
         const movieKeys = Object.keys(allMovies);
         if (movieKeys.length > 0) {
@@ -68,7 +64,7 @@ $(document).ready(function () {
         }
       }
       
-      // Display first hint (Hint1 from the secret movie)
+      // Display first hint
       if (movieHints[currentMovie] && movieHints[currentMovie].length > 0) {
         displayHint(0, movieHints[currentMovie][0]);
       } else {
@@ -90,7 +86,6 @@ $(document).ready(function () {
     allMovies = {};
     movieHints = {};
     
-    // Expected format: { "Barbie": ["hint1", "hint2", "hint3"], ... }
     if (typeof wordBankData === 'object' && wordBankData !== null && !Array.isArray(wordBankData)) {
       Object.keys(wordBankData).forEach(key => {
         // Format the display name (e.g., "TheLionKing" -> "The Lion King")
@@ -112,7 +107,6 @@ $(document).ready(function () {
   }
 
   function generateMovieChoices() {
-    // Get movie keys (not display names)
     const movieKeys = Object.keys(allMovies);
     
     if (movieKeys.length < 4) {
@@ -128,7 +122,7 @@ $(document).ready(function () {
       return;
     }
     
-    // Get 3 random wrong movies
+    // Random wrong movies
     const wrongMovies = movieKeys
       .filter(k => k !== currentMovie)
       .sort(() => Math.random() - 0.5)
@@ -145,8 +139,8 @@ $(document).ready(function () {
     choices.forEach(movieKey => {
       const button = document.createElement('button');
       button.className = 'filmster-choice';
-      button.textContent = allMovies[movieKey] || movieKey;  // Display name
-      button.dataset.movieKey = movieKey;  // Store key for guess
+      button.textContent = allMovies[movieKey] || movieKey;  
+      button.dataset.movieKey = movieKey;  
       button.dataset.answer = movieKey === currentMovie ? 'correct' : 'wrong';
       button.addEventListener('click', handleChoice);
       filmsterChoicesContainer.appendChild(button);
@@ -177,7 +171,7 @@ $(document).ready(function () {
       triesLeft--;
       filmsterTriesDisplay.textContent = triesLeft;
       
-      // Send guess to interpreter (for tracking purposes)
+      // Send guess to interpreter 
       try {
         await sendCommand(`guess ${movieKey}`, game);
       } catch (error) {
@@ -185,7 +179,7 @@ $(document).ready(function () {
       }
       
       if (triesLeft > 0) {
-        // Reveal next hint from the available hints (Hint2, then Hint3)
+        // Reveal next hint from the available hints 
         if (movieHints[currentMovie] && hintIndex < 2 && hintIndex < movieHints[currentMovie].length - 1) {
           hintIndex++;
           const nextHint = movieHints[currentMovie][hintIndex];
@@ -195,7 +189,7 @@ $(document).ready(function () {
         filmsterFeedback.textContent = `Wrong! Try again. ${triesLeft} ${triesLeft === 1 ? 'try' : 'tries'} left.`;
         filmsterFeedback.className = 'filmster-feedback incorrect';
       } else {
-        // Game over - no tries left
+        // Game over
         const displayName = allMovies[currentMovie] || currentMovie;
         
         filmsterFeedback.textContent = `Game Over! The answer was ${displayName}.`;
@@ -281,17 +275,17 @@ function showPlayAgainButton() {
   `;
 
   playAgainBtn.addEventListener('click', async function() {
-    // Optional: visually indicate loading
+    // Indicate loading
     playAgainBtn.textContent = 'Loading new round... 🎥';
     playAgainBtn.disabled = true;
 
     // Fully reset and start a new randomized game
     try {
-      await resetGame(game); // clear any backend/interpreter state
-      currentMovie = ""; // ensure we don't reuse the same movie
+      await resetGame(game); 
+      currentMovie = ""; 
       hintIndex = 0;
       gameOver = false;
-      startNewGame(); // this will randomly select a new movie and hints
+      startNewGame();
     } catch (error) {
       console.error("Error restarting game:", error);
       filmsterFeedback.textContent = "Error restarting game. Please refresh.";

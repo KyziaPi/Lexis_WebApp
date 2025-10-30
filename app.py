@@ -355,14 +355,11 @@ def format_raildle_guess(result, command, game):
 
 def format_filmster_words(game, result):
     """Format word list for Filmster game - return movies with their hints"""
-    # The interpreter should return something like:
-    # "words: Barbie, Titanic, TheLionKing, ..."
     
     # Parse the result to get movie keys
     response = result.split(":", 1)[1] if ":" in result else result
     movie_keys = [w.strip() for w in response.split(",")]
     
-    # Now we need to read the word bank file to get the hints
     words_with_hints = {}
     
     try:
@@ -370,7 +367,7 @@ def format_filmster_words(game, result):
         with open('WordBanks/filmster', 'r', encoding='utf-8') as f:
             lines = f.readlines()
         
-        # Parse each line (skip header which starts with "word |")
+        # Parse each line
         for line in lines:
             line = line.strip()
             if not line or line.startswith('word |'):
@@ -404,7 +401,7 @@ def format_filmster_guess(result, command, game):
     """Format guess result for Filmster game"""
     guessed_word = command.split(" ", 1)[1] if " " in command else ""
     
-    # For filmster, we just need to return the result with secret if game is over
+    # Return the result with secret if game is over
     if result["result"] == "win" or result["result"] == "lose":
         secret_value = session.get(f"{game}_secret_word")
         # Add spaces to PascalCase names for display
