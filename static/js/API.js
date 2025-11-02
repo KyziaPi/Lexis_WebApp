@@ -68,13 +68,13 @@ function handleRaildleResponse(cmd, response) {
 
 function handleFilmsterResponse(cmd, response) {
     if (cmd === "show") {
-        // EDIT THIS, YUNG VALUE NG NASA BUTTONS SHOULD CORRESPOND SA RESULT
-        console.log(response);
+        console.log("Filmster show response", response);
+        if (response && typeof response === 'object') {
+            window.filmsterMoviesData = response;
+        }
     }
-    if (cmd.startsWith("guess")) {
+    if (cmd.startsWith("Filmster guess response:", response)) {
         console.log(response);
-        // EDIT THIS, LAGAY MO DITO UNG FUNCTION THAT UPDATES THE HTML AFTER MAGCLICK NG BUTTON
-        updateTriesCount(response.tries, "#tries-counter");
     }
 }
 
