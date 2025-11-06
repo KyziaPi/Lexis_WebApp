@@ -228,43 +228,40 @@ async function getSecretWord(showBatch) {
     }
 }
 
+// Snuzzle Game Initialization
 async function initializeGame() {
     try {
+        console.log("Initializing Snuzzle game...");
+
+        // Reset local variables
+        currentRow = 0;
+        currentTile = 0;
+        currentGuess = "";
+        gameOver = false;
         clearBoard();
-        clearKeyboard();
-        console.log('Initializing game...');
 
-        const sessionData = await getSessionCommands(GAME_NAME);
-        console.log('Session data:', sessionData);
+        // Always start a fresh session
+        console.log("Starting fresh game");
+        const commands = [
+            "file snuzzle",
+            "start",
+            `max_guesses ${MAX_GUESSES}`,
+            "word",
+            "show"
+        ];
 
-        let response;
+        const response = await sendBatchCommands(commands, GAME_NAME);
+        console.log("Initialization response:", response);
+        gameInitCommands = commands;
 
-        if (sessionData && sessionData.commands && sessionData.commands.length > 4) {
-            console.log('Restoring previous session');
-            response = await sendBatchCommands(sessionData.commands, GAME_NAME);
-            gameInitCommands = sessionData.commands.slice(0, 6);
-            await restoreGameState(sessionData.commands, response);
-        } else {
-            console.log('Starting fresh game');
-            const commands = [
-                "file snuzzle",
-                "start",
-                `max_guesses ${MAX_GUESSES}`,
-                "word",
-                "show"
-            ];
-            response = await sendBatchCommands(commands, GAME_NAME);
-            console.log('Initialization response:', response);
-            gameInitCommands = commands;
-
-            if (response && response.results) {
-                const showResult = response.results.find(r => r.command === "show");
-                if (showResult && showResult.result) {
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                    const updatedSession = await getSessionCommands(GAME_NAME);
-                    if (updatedSession && updatedSession.commands) {
-                        gameInitCommands = updatedSession.commands.slice(0, 5);
-                    }
+        // Small delay to let backend sync before reading session
+        if (response && response.results) {
+            const showResult = response.results.find(r => r.command === "show");
+            if (showResult && showResult.result) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                const updatedSession = await getSessionCommands(GAME_NAME);
+                if (updatedSession && updatedSession.commands) {
+                    gameInitCommands = updatedSession.commands.slice(0, 5);
                 }
             }
         }
