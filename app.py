@@ -209,7 +209,7 @@ def reset_game(game):
     session.pop(f"{game}_commands", None)
     session.pop(f"{game}_secret_word", None)
     session.pop(f"{game}_words", None)
-    session.pop(f"{game}_triesCount]", None)
+    session.pop(f"{game}_triesCount", None)
     return f"{game}: Game session cleared"
 
 
