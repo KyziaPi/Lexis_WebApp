@@ -9,7 +9,6 @@ $(document).ready(function () {
   var triesLeft = 3;
   var gameOver = false;
   var hintIndex = 0;
-  var game = "filmster";
 
   // DOM elements
   const filmsterHint1 = document.getElementById('filmster-hint1');
@@ -22,69 +21,86 @@ $(document).ready(function () {
 
   startNewGame();
 
-  async function startNewGame() {
-    try {
-      gameOver = false;
-      triesLeft = 3;
-      hintIndex = 0;
-      
-      
-      resetUI();
-      
-      // Initialize game with interpreter
-      const initResponse = await initGame(game, max_guesses, secret_word);
-      
-      // Parse the word bank to get movies and hints
-      if (initResponse && initResponse.results) {
-        const wordsResult = initResponse.results.find(r => r.command === "words");
+async function startNewGame() {
+  try {
+    gameOver = false;
+    triesLeft = 3;
+    hintIndex = 0;
+    
+    resetUI();
+    
+    // Initialize game with interpreter
+    const initResponse = await initGame(game, max_guesses, secret_word);
+    
+    // Parse the word bank to get movies and hints
+    if (initResponse && initResponse.results) {
+      const wordsResult = initResponse.results.find(r => r.command === "words");
 
-        if (wordsResult && wordsResult.result) {
-          parseWordBank(wordsResult.result);
+      if (wordsResult && wordsResult.result) {
+        parseWordBank(wordsResult.result);
+      }
+      
+      // Get the word command result which contains the first hint
+      const wordResult = initResponse.results.find(r => r.command === "word" || r.command.startsWith("word"));
+      let secretHint = null;
+      
+      if (wordResult && wordResult.result) {
+        // Extract the hint from the result message
+        const resultText = wordResult.result;
+        const hintMatch = resultText.match(/Hint:\s*(.+)/);
+        if (hintMatch) {
+          secretHint = hintMatch[1].trim();
+          console.log("Secret hint from interpreter:", secretHint);
         }
-        
-        const showResult = initResponse.results.find(r => r.command === "show");
-        if (showResult && showResult.result && showResult.result.name) {
-          currentMovie = showResult.result.name;
-        }
-        
-        if (!currentMovie) {
-          const wordResult = initResponse.results.find(r => r.command.startsWith("word"));
-          if (wordResult && wordResult.command) {
-            const parts = wordResult.command.split(" ");
-            if (parts.length > 1) {
-              currentMovie = parts[1];
-            }
+      }
+      
+      // Match the hint to find the current movie
+      if (secretHint) {
+        // Loop through all movies and find which one has this hint as their first hint
+        for (const [movieKey, hints] of Object.entries(movieHints)) {
+          if (hints[0] === secretHint) {
+            currentMovie = movieKey;
+            console.log("Matched secret movie:", currentMovie);
+            break;
           }
         }
       }
       
-      // Random movie
-      if (!currentMovie || !allMovies[currentMovie]) {
-        const movieKeys = Object.keys(allMovies);
-        if (movieKeys.length > 0) {
-          currentMovie = movieKeys[Math.floor(Math.random() * movieKeys.length)];
-        }
+      // Get the show result which contains the choices
+      const showResult = initResponse.results.find(r => r.command === "show");
+      if (showResult && showResult.result && typeof showResult.result === 'object') {
+        window.filmsterMovieChoices = showResult.result;
       }
-      
-      // Display first hint
-      if (movieHints[currentMovie] && movieHints[currentMovie].length > 0) {
-        displayHint(0, movieHints[currentMovie][0]);
-      } else {
-        displayHint(0, "A mysterious movie...");
-      }
-      
-      // Generate and display choices
-      generateMovieChoices();
-
-      // Update win streak
-      updateWinstreakDisplay();
-      
-    } catch (error) {
-      console.error("Error starting game:", error);
-      filmsterFeedback.textContent = "Error loading game. Please refresh.";
-      filmsterFeedback.className = "filmster-feedback incorrect";
     }
+    
+    // If no currentMovie error
+    if (!currentMovie) {
+      console.error("No secret word received from interpreter!");
+      filmsterFeedback.textContent = "Error: Could not determine secret word.";
+      return;
+    }
+    
+    console.log("Current secret movie:", currentMovie);
+    
+    // Display first hint for the secret word
+    if (movieHints[currentMovie] && movieHints[currentMovie].length > 0) {
+      displayHint(0, movieHints[currentMovie][0]);
+    } else {
+      displayHint(0, "A mysterious movie...");
+    }
+    
+    // Generate and display choices using interpreter's choices
+    generateMovieChoices();
+
+    // Update win streak
+    updateWinstreakDisplay();
+    
+  } catch (error) {
+    console.error("Error starting game:", error);
+    filmsterFeedback.textContent = "Error loading game. Please refresh.";
+    filmsterFeedback.className = "filmster-feedback incorrect";
   }
+}
 
   function parseWordBank(wordBankData) {
     // Reset data structures
@@ -97,9 +113,16 @@ $(document).ready(function () {
         const displayName = key.replace(/([A-Z])/g, ' $1').trim();
         allMovies[key] = displayName;
         
+        let hints = wordBankData[key];
+        
+        // If hints is a string, split it by pipe
+        if (typeof hints === 'string') {
+          hints = hints.split('|').map(h => h.trim());
+        }
+        
         // Store the hints
-        if (Array.isArray(wordBankData[key]) && wordBankData[key].length >= 3) {
-          movieHints[key] = wordBankData[key];
+        if (Array.isArray(hints) && hints.length >= 3) {
+          movieHints[key] = hints;
         } else {
           console.error(`Invalid hints for ${key}:`, wordBankData[key]);
           movieHints[key] = ["Hint 1", "Hint 2", "Hint 3"];
@@ -108,10 +131,31 @@ $(document).ready(function () {
     } else {
       console.error("Unexpected word bank format!", wordBankData);
     }
-    
   }
 
   function generateMovieChoices() {
+    // Use the choices from the interpreter if available
+    if (window.filmsterMovieChoices && Object.keys(window.filmsterMovieChoices).length > 0) {
+      const choices = window.filmsterMovieChoices;
+      
+      // Clear existing choices
+      filmsterChoicesContainer.innerHTML = '';
+      
+      // Create choice buttons using the interpreter's choices
+      Object.keys(choices).forEach(movieKey => {
+        const button = document.createElement('button');
+        button.className = 'filmster-choice';
+        button.textContent = choices[movieKey]; // Use the display name from interpreter
+        button.dataset.movieKey = movieKey;  
+        button.dataset.answer = movieKey === currentMovie ? 'correct' : 'wrong';
+        button.addEventListener('click', handleChoice);
+        filmsterChoicesContainer.appendChild(button);
+      });
+      
+      return;
+    }
+    
+    // Fallback: Generate random choices if interpreter choices not available
     const movieKeys = Object.keys(allMovies);
     
     if (movieKeys.length < 4) {
@@ -159,6 +203,14 @@ $(document).ready(function () {
     const isCorrect = button.dataset.answer === 'correct';
     const movieKey = button.dataset.movieKey;
     
+    // Send guess to interpreter first to get response
+    try {
+      const guessResponse = await sendCommand(`guess ${movieKey}`, game);
+      console.log("Guess response from interpreter:", guessResponse);
+    } catch (error) {
+      console.error("Error sending guess:", error);
+    }
+    
     if (isCorrect) {
       // Correct guess
       button.classList.add('correct');
@@ -176,13 +228,6 @@ $(document).ready(function () {
       button.disabled = true;
       triesLeft--;
       filmsterTriesDisplay.textContent = triesLeft;
-      
-      // Send guess to interpreter 
-      try {
-        await sendCommand(`guess ${movieKey}`, game);
-      } catch (error) {
-        console.error("Error sending guess:", error);
-      }
       
       if (triesLeft > 0) {
         // Reveal next hint from the available hints 
@@ -261,50 +306,51 @@ $(document).ready(function () {
     filmsterChoicesContainer.innerHTML = '';
   }
 
-function updateWinstreakDisplay() {
-  const streak = getWinstreak(game);
-  filmsterWinstreakDisplay.textContent = streak;
-}
+  function updateWinstreakDisplay() {
+    const streak = getWinstreak(game);
+    filmsterWinstreakDisplay.textContent = streak;
+  }
 
-function showPlayAgainButton() {
-  const playAgainBtn = document.createElement('button');
-  playAgainBtn.textContent = 'Play Again 🎬';
-  playAgainBtn.className = 'filmster-play-again-btn';
-  playAgainBtn.type = 'button';
+  function showPlayAgainButton() {
+    const playAgainBtn = document.createElement('button');
+    playAgainBtn.textContent = 'Play Again 🎬';
+    playAgainBtn.className = 'filmster-play-again-btn';
+    playAgainBtn.type = 'button';
 
-  playAgainBtn.style.cssText = `
-    background-color: #6b2d8f !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 50px !important;
-    padding: 1rem 3rem !important;
-    font-size: 1.2rem !important;
-    font-weight: 600 !important;
-    margin: 1.5rem auto 0 auto !important;
-    cursor: pointer !important;
-    display: block !important;
-    font-family: 'Poppins', sans-serif !important;
-  `;
+    playAgainBtn.style.cssText = `
+      background-color: #6b2d8f !important;
+      color: white !important;
+      border: none !important;
+      border-radius: 50px !important;
+      padding: 1rem 3rem !important;
+      font-size: 1.2rem !important;
+      font-weight: 600 !important;
+      margin: 1.5rem auto 0 auto !important;
+      cursor: pointer !important;
+      display: block !important;
+      font-family: 'Poppins', sans-serif !important;
+    `;
 
-  playAgainBtn.addEventListener('click', async function() {
-    // Indicate loading
-    playAgainBtn.textContent = 'Loading new round... 🎥';
-    playAgainBtn.disabled = true;
+    playAgainBtn.addEventListener('click', async function() {
+      // Indicate loading
+      playAgainBtn.textContent = 'Loading new round... 🎥';
+      playAgainBtn.disabled = true;
 
-    // Fully reset and start a new randomized game
-    try {
-      await resetGame(game); 
-      currentMovie = ""; 
-      hintIndex = 0;
-      gameOver = false;
-      startNewGame();
-    } catch (error) {
-      console.error("Error restarting game:", error);
-      filmsterFeedback.textContent = "Error restarting game. Please refresh.";
-    }
-  });
+      // Fully reset and start a new randomized game
+      try {
+        await resetGame(game); 
+        currentMovie = ""; 
+        hintIndex = 0;
+        gameOver = false;
+        window.filmsterMovieChoices = null; // Clear the choices
+        startNewGame();
+      } catch (error) {
+        console.error("Error restarting game:", error);
+        filmsterFeedback.textContent = "Error restarting game. Please refresh.";
+      }
+    });
 
-  filmsterFeedback.appendChild(document.createElement('br'));
-  filmsterFeedback.appendChild(playAgainBtn);
-}
+    filmsterFeedback.appendChild(document.createElement('br'));
+    filmsterFeedback.appendChild(playAgainBtn);
+  }
 });
