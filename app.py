@@ -211,8 +211,8 @@ def reset_game(game):
     session.pop(f"{game}_secret_word", None)
     session.pop(f"{game}_words", None)
     session.pop(f"{game}_triesCount", None)
-    return f"{game}: Game session cleared"
-
+    test = session.get("{game}_commands", None)
+    return jsonify({"message": "Game session cleared"})
 
 def handle_show(game):
     """Handle 'show' command - save secret word"""
@@ -231,11 +231,14 @@ def handle_show(game):
         session[f"{game}_commands"] = game_commands
         session.modified = True
         
-    # REMOVE AFTER DONE IMPLEMENTING FEATURES
     if game == "filmster":
         # Edit words in session to include secret word and 3 random words
         filmster_edit_words(game, secret_word)
         return jsonify(session.get(f"{game}_words", {}))
+    
+    if game == "snuzzle":
+        result = re.split(r":\s*", result)[1].strip()
+        return jsonify(result)
                 
     return jsonify("Secret word has been saved.")
 
@@ -245,7 +248,7 @@ def handle_words(game):
     result = interp.run_once("words")
     
     if game == "raildle":
-        return format_words(game, result)
+        return format_raildle_words(game, result)
     elif game == "filmster":
         return format_filmster_words(game, result)
     
@@ -288,8 +291,8 @@ def handle_generic_command(command):
 # Helper functions
 
 
-def format_words(game, result):
-    """Format word list for Raildle/Filmster game"""
+def format_raildle_words(game, result):
+    """Format word list for Raildle game"""
     response = result.split(":", 1)[1]
     keys = [w.strip() for w in response.split(",")]
     keys.sort()
@@ -372,7 +375,7 @@ def format_filmster_words(game, result):
     
     try:
         # Read the filmster word bank file
-        with open('WordBanks/filmster', 'r', encoding='utf-8') as f:
+        with open('WordBanks/filmster.txt', 'r', encoding='utf-8') as f:
             lines = f.readlines()
         
         # Parse each line (format: MovieName | Hint1 | Hint2 | Hint3)
@@ -391,7 +394,7 @@ def format_filmster_words(game, result):
                         words_with_hints[movie_key] = hints
                 
     except FileNotFoundError:
-        print("ERROR: WordBanks/filmster file not found!")
+        print("ERROR: WordBanks/filmster.txt file not found!")
         # Fallback: return movie names without hints
         for key in movie_keys:
             words_with_hints[key] = ["A mysterious movie", "Can you guess it?", "Think harder!"]

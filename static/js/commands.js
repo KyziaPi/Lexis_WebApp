@@ -82,26 +82,28 @@ function updateTriesCount(tries, element) {
 // Game initialization
 async function initGame(game, max_guesses = 6, secret_word = "") {
     try {
-        if (game == "filmster") setGameActive(game, false);
+        // Session keep not implemented elsewhere but raildle
+        if (game != "raildle") setGameActive(game, false);
+        else {
+            // Fetch previous session commands
+            const sessionData = await getCommands(game);
 
-        // Fetch previous session commands
-        const sessionData = await getCommands(game);
-
-        // If game is already active and a guess has been made, replay previous session
-        if (isGameActive(game) && sessionData && sessionData.commands && sessionData.commands.length > 6) {
-            const response = await sendBatchCommands(sessionData.commands, game);
-            return response;
+            // If game is already active and a guess has been made, replay previous session
+            if (isGameActive(game) && sessionData && sessionData.commands && sessionData.commands.length > 6) {
+                const response = await sendBatchCommands(sessionData.commands, game);
+                return response;
+            }
         }
         
         // Prepare batch commands
         const commands = [
-            `file ${game}`,
+            `file ${game}.txt`,
             "start",
             `max_guesses ${max_guesses}`,
             `word ${secret_word}`,
-            "words",
             "show"
         ];
+        if (game == "raildle" || game == "filmster") commands.splice(4, 0, "words");
 
         // Set game as active
         setGameActive(game, true);
@@ -119,19 +121,23 @@ async function initGame(game, max_guesses = 6, secret_word = "") {
 
 // Clear game session
 function resetGame(game) {
-    $.ajax({
+    return new Promise((resolve, reject) => {
+        $.ajax({
             url: `/reset_game/${game}`,
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify({ game: game }),
             success: function(res) {
                 // Clear local state
-                setGameActive(game, false)
-                setGameOver(game, false)
+                setGameActive(game, false);
+                setGameOver(game, false);
+                resolve(res);
             },
             error: function(err) {
                 console.error(`Error clearing session for "${game}":`, err);
+                reject(err);
             }
+        });
     });
 }
 

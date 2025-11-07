@@ -33,25 +33,29 @@ $(document).ready(function () {
         $('#character-select').val(null).trigger('change'); // Clear the selection
     });
 
-    $("#reset_game").click(function() {
-        // Set game as inactive and clear session
-        resetGame(game)
+    $("#reset_game").click(async function() {
+        try {
+            // Set game as inactive and clear session
+            await resetGame(game)
 
-        // Reset counter
-        $("#tries-counter").text(0);
+            // Reset counter
+            $("#tries-counter").text(0);
 
-        // Restart game function
-        initGame(game, max_guesses, secret_word);
+            // Restart game function
+            await initGame(game, max_guesses, secret_word); 
 
-        // Edit html features
-        btnToDropdown();
-        $("#answers-table tr").not(":first").remove();
-        $(".raildle-tries-card__result-container").remove();
+            // Edit html features
+            btnToDropdown();
+            $("#answers-table tr").not(":first").remove();
+            $(".raildle-tries-card__result-container").remove();
 
-        // Reset disabled dropdown options
-        for (var chara of selectedCharacters){
-            $('#character-select').find(`option[value="${chara}"]`).prop('disabled', false);
-            $('#character-select').trigger('change.select2');
+            // Reset disabled dropdown options
+            for (var chara of selectedCharacters){
+                $('#character-select').find(`option[value="${chara}"]`).prop('disabled', false);
+                $('#character-select').trigger('change.select2');
+            }
+        } catch (error) {
+            console.error("Error restarting game:", error);
         }
     })
 });

@@ -6,239 +6,31 @@ let currentRow = 0;
 let currentTile = 0;
 let currentGuess = "";
 let gameOver = false;
-let secretWord = "";
-let gameInitCommands = [];
+let secretWord = "brand";
+let guesses = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     initializeGame();
     attachKeyboardListeners();
 });
 
-// API Communication Functions
-async function sendCommand(cmd, game) {
-    try {
-        const response = await fetch(`/run/${game}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ command: cmd })
-        });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        return await response.json();
-    } catch (error) {
-        console.error(`Error executing command "${cmd}":`, error);
-        throw error;
-    }
-}
-
-async function sendBatchCommands(commands, game) {
-    try {
-        const response = await fetch(`/run/${game}/batch`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ commands: commands })
-        });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        return await response.json();
-    } catch (error) {
-        console.error(`Error executing batch commands:`, error);
-        throw error;
-    }
-}
-
-async function getSessionCommands(game) {
-    try {
-        const response = await fetch(`/fetch/session/${game}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ game: game })
-        });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        return await response.json();
-    } catch (error) {
-        console.error(`Error fetching session:`, error);
-        return { commands: [] };
-    }
-}
-
-// Get secret word from show command response
-async function getSecretWord(showBatch) {
-    const invalidWords = new Set([
-        "loaded", "ready", "unknown", "state",
-        "start", "guess", "error", "snuzzle", "file", "show", "game"
-    ]);
-
-    const normalize = (w) => {
-        if (!w) return null;
-        const cleaned = String(w).trim().replace(/[^a-zA-Z]/g, "");
-        return cleaned.length === WORD_LENGTH ? cleaned.toLowerCase() : null;
-    };
-
-    async function fetchWordBank() {
-        try {
-            const res = await sendCommand("words", GAME_NAME);
-            if (!res) return [];
-
-            if (typeof res === "object") {
-                if (Array.isArray(res)) return res.map(r => String(r).toLowerCase());
-                if (Object.keys(res).length) return Object.keys(res).map(k => String(k).toLowerCase());
-                try {
-                    const s = JSON.stringify(res);
-                    const tokens = s.match(/\b([a-zA-Z]{5,})\b/g) || [];
-                    return tokens.map(t => t.toLowerCase());
-                } catch { return []; }
-            }
-
-            if (typeof res === "string") {
-                const text = res.replace(/["']/g, " ").replace(/\n/g, " ").trim();
-                const afterColon = text.includes(":") ? text.split(":", 2)[1] : text;
-                if (!afterColon) return [];
-
-                const rawCandidates = afterColon.split(/[,|]/).map(s => s.trim()).filter(Boolean);
-                const expanded = rawCandidates.flatMap(r => r.split(/\s+/).map(s => s.trim()).filter(Boolean));
-                return expanded.map(w => normalize(w)).filter(Boolean);
-            }
-
-            return [];
-        } catch (err) {
-            console.warn("fetchWordBank error:", err);
-            return [];
-        }
-    }
-
-    try {
-        const wordBank = await fetchWordBank();
-        const bankSet = new Set(wordBank);
-        const candidates = [];
-
-        if (showBatch && showBatch.results && Array.isArray(showBatch.results)) {
-            for (const res of showBatch.results) {
-                try {
-                    const raw = res.result;
-                    const cmd = res.command || "";
-
-                    if (raw && typeof raw === "object") {
-                        const keys = ["word", "secret", "secret_word", "secretWord", "answer"];
-                        for (const k of keys) {
-                            if (raw[k] && typeof raw[k] === "string") {
-                                const n = normalize(raw[k]);
-                                if (n && !invalidWords.has(n)) candidates.push(n);
-                            }
-                        }
-                        const s = JSON.stringify(raw);
-                        const toks = s.match(/\b([a-zA-Z]{5,})\b/g) || [];
-                        for (const t of toks) {
-                            const n = normalize(t);
-                            if (n && !invalidWords.has(n)) candidates.push(n);
-                        }
-                    }
-
-                    if (typeof raw === "string") {
-                        let m = raw.match(/(?:secret|answer|word)\s*(?:was|is|:)?\s*([a-zA-Z]{5,})/i);
-                        if (m) {
-                            const n = normalize(m[1]);
-                            if (n && !invalidWords.has(n)) candidates.push(n);
-                        }
-
-                        const toks = raw.match(/\b([a-zA-Z]{5,})\b/g) || [];
-                        for (const t of toks) {
-                            const n = normalize(t);
-                            if (n && !invalidWords.has(n)) candidates.push(n);
-                        }
-                    }
-
-                    if (cmd && typeof cmd === "string") {
-                        const cm = cmd.match(/\bword[:\s]+\s*([a-zA-Z]{5,})\b/i);
-                        if (cm) {
-                            const n = normalize(cm[1]);
-                            if (n && !invalidWords.has(n)) candidates.push(n);
-                        }
-                    }
-                } catch (inner) {
-                    // continue
-                }
-            }
-        }
-
-        try {
-            const session = await getSessionCommands(GAME_NAME);
-            if (session && Array.isArray(session.commands)) {
-                for (const cmd of session.commands) {
-                    try {
-                        if (typeof cmd === "string") {
-                            const m = cmd.match(/\bword[:\s]+\s*([a-zA-Z]{5,})\b/i);
-                            if (m) {
-                                const n = normalize(m[1]);
-                                if (n && !invalidWords.has(n)) candidates.push(n);
-                            }
-                        }
-                    } catch {}
-                }
-            }
-        } catch (e) {
-            console.warn("session fallback failed:", e);
-        }
-
-        const seen = new Set();
-        const uniqCandidates = [];
-        for (const c of candidates) {
-            if (!c) continue;
-            if (!seen.has(c)) {
-                seen.add(c);
-                uniqCandidates.push(c);
-            }
-        }
-
-        for (const cand of uniqCandidates) {
-            if (bankSet.has(cand)) return cand;
-        }
-
-        return null;
-
-    } catch (err) {
-        console.error("Error in getSecretWord:", err);
-        return null;
-    }
-}
-
 // Snuzzle Game Initialization
 async function initializeGame() {
     try {
-        console.log("Initializing Snuzzle game...");
-
         currentRow = 0;
         currentTile = 0;
         currentGuess = "";
         gameOver = false;
         clearBoard();
-
-        console.log("Starting fresh game");
-        const commands = [
-            "file snuzzle",
-            "start",
-            `max_guesses ${MAX_GUESSES}`,
-            "word",
-            "show"
-        ];
-
-        const response = await sendBatchCommands(commands, GAME_NAME);
-        gameInitCommands = commands;
-
-        if (response && response.results) {
-            const showResult = response.results.find(r => r.command === "show");
-            if (showResult && showResult.result) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-                const updatedSession = await getSessionCommands(GAME_NAME);
-                if (updatedSession && updatedSession.commands) {
-                    gameInitCommands = updatedSession.commands.slice(0, 5);
-                }
-            }
-        }
-
+        
+        await initGame(GAME_NAME, MAX_GUESSES, secretWord);
+        
+        // Reset game state
         currentRow = 0;
         currentTile = 0;
         currentGuess = "";
         gameOver = false;
-
+        
         showMessage("Ready to play! Make your first guess.", "info");
     } catch (error) {
         console.error("Error initializing game:", error);
@@ -256,8 +48,7 @@ function attachKeyboardListeners() {
     });
 }
 
-async function resetGame() {
-    console.log('Resetting game...');
+async function snuzzleResetGame() {
     gameOver = true;
     clearBoard();
     clearKeyboard();
@@ -267,13 +58,8 @@ async function resetGame() {
     if (playAgainBtn) playAgainBtn.remove();
 
     try {
-        await fetch(`/reset_game/${GAME_NAME}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ game: GAME_NAME })
-        });
+        resetGame(GAME_NAME);
 
-        gameInitCommands = [];
         await new Promise(resolve => setTimeout(resolve, 500));
 
         await initializeGame();
@@ -317,10 +103,11 @@ function addLetter(letter) {
     if (currentTile < WORD_LENGTH) {
         const tile = getTile(currentRow, currentTile);
         if (!tile) return;
-        tile.textContent = letter.toUpperCase();
-        tile.style.animation = 'snuzzle-pop 0.1s ease-in-out';
         currentGuess += letter;
         currentTile++;
+        tile.textContent = letter.toUpperCase();
+        tile.classList.add('snuzzle-pop-animation');
+        setTimeout(() => tile.classList.remove('snuzzle-pop-animation'), 100);
     }
 }
 
@@ -342,15 +129,18 @@ async function submitGuess() {
         return;
     }
 
-    if (gameInitCommands.length === 0) {
-        showMessage("Game is still initializing...", "error");
-        return;
-    }
-
     try {
         const guess = currentGuess.toLowerCase();
+        for (const previous_guess of guesses) {
+            if (previous_guess == guess) {
+                showMessage("Already guessed that word!", "error");
+                shakeTiles(currentRow);
+                return;
+            }
+        }
+        guesses.push(guess);
 
-        // FIXED: Only send the guess command, not all previous commands
+        // Only send the guess command, not all previous commands
         const guessCommand = `guess ${guess}`;
         const response = await sendCommand(guessCommand, GAME_NAME);
         
@@ -419,24 +209,7 @@ async function submitGuess() {
         if (result.result === "lose") {
             gameOver = true;
             setTimeout(async () => {
-                const showResponse = await sendCommand("show", GAME_NAME);
-                const showBatch = { results: [{ command: "show", result: showResponse }] };
-                let revealed = await getSecretWord(showBatch);
-                if (!revealed) revealed = await getSecretWord(null);
-                const finalWord = revealed ? revealed.toUpperCase() : "UNKNOWN";
-                showMessage(`Game Over! The word was: ${finalWord}`, "error");
-                showPlayAgainButton();
-            }, 2000);
-            return;
-        }
-
-        // Auto-lose if we've used all rows and didn't win
-        if (currentRow >= MAX_GUESSES && !gameOver) {
-            gameOver = true;
-            setTimeout(async () => {
-                const showResponse = await sendCommand("show", GAME_NAME);
-                const showBatch = { results: [{ command: "show", result: showResponse }] };
-                let revealed = await getSecretWord(showBatch);
+                const revealed = await sendCommand("show", GAME_NAME);
                 if (!revealed) revealed = await getSecretWord(null);
                 const finalWord = revealed ? revealed.toUpperCase() : "UNKNOWN";
                 showMessage(`Game Over! The word was: ${finalWord}`, "error");
@@ -552,7 +325,7 @@ function showPlayAgainButton() {
     const button = document.createElement('button');
     button.className = 'snuzzle-play-again';
     button.textContent = 'Play Again';
-    button.onclick = resetGame;
+    button.onclick = snuzzleResetGame;
     
     // Insert button between board and keyboard
     const keyboard = document.querySelector('.snuzzle-keyboard');
