@@ -60,35 +60,27 @@ async function getSessionCommands(game) {
     }
 }
 
-// Replace your existing getSecretWord(showBatch) with this version
+// Get secret word from show command response
 async function getSecretWord(showBatch) {
-    // Known tokens we should ignore (common non-secret words)
     const invalidWords = new Set([
         "loaded", "ready", "unknown", "state",
         "start", "guess", "error", "snuzzle", "file", "show", "game"
     ]);
 
-    // Helper: normalize a candidate and ensure alphabetic only
     const normalize = (w) => {
         if (!w) return null;
         const cleaned = String(w).trim().replace(/[^a-zA-Z]/g, "");
         return cleaned.length === WORD_LENGTH ? cleaned.toLowerCase() : null;
     };
 
-    // Helper: parse the "words" command result into an array of words (lowercase)
     async function fetchWordBank() {
         try {
             const res = await sendCommand("words", GAME_NAME);
-            // res might be a string like "Words: apple, berry, candy" or JSON-like
             if (!res) return [];
 
-            // If response is an object already (some games return JSON), try to extract
             if (typeof res === "object") {
-                // If it's an array already
                 if (Array.isArray(res)) return res.map(r => String(r).toLowerCase());
-                // If it's an object with keys being words (like raildle), return keys
                 if (Object.keys(res).length) return Object.keys(res).map(k => String(k).toLowerCase());
-                // fallback stringify
                 try {
                     const s = JSON.stringify(res);
                     const tokens = s.match(/\b([a-zA-Z]{5,})\b/g) || [];
@@ -96,22 +88,14 @@ async function getSecretWord(showBatch) {
                 } catch { return []; }
             }
 
-            // If it's a plain string
             if (typeof res === "string") {
-                // remove quotes and newlines
                 const text = res.replace(/["']/g, " ").replace(/\n/g, " ").trim();
-
-                // common format "Words: a, b, c" -> take after colon
                 const afterColon = text.includes(":") ? text.split(":", 2)[1] : text;
                 if (!afterColon) return [];
 
-                // split by commas or spaces
                 const rawCandidates = afterColon.split(/[,|]/).map(s => s.trim()).filter(Boolean);
-                // further split pieces that might be space-separated
                 const expanded = rawCandidates.flatMap(r => r.split(/\s+/).map(s => s.trim()).filter(Boolean));
-                return expanded
-                    .map(w => normalize(w))
-                    .filter(Boolean);
+                return expanded.map(w => normalize(w)).filter(Boolean);
             }
 
             return [];
@@ -122,11 +106,8 @@ async function getSecretWord(showBatch) {
     }
 
     try {
-        //get word bank first (so we can filter candidates)
-        const wordBank = await fetchWordBank(); // array of lowercase words, 5 letters
+        const wordBank = await fetchWordBank();
         const bankSet = new Set(wordBank);
-
-        //collect candidate words from showBatch results
         const candidates = [];
 
         if (showBatch && showBatch.results && Array.isArray(showBatch.results)) {
@@ -135,7 +116,6 @@ async function getSecretWord(showBatch) {
                     const raw = res.result;
                     const cmd = res.command || "";
 
-                    // If object, check likely fields
                     if (raw && typeof raw === "object") {
                         const keys = ["word", "secret", "secret_word", "secretWord", "answer"];
                         for (const k of keys) {
@@ -144,7 +124,6 @@ async function getSecretWord(showBatch) {
                                 if (n && !invalidWords.has(n)) candidates.push(n);
                             }
                         }
-                        // fallback: stringify and search tokens
                         const s = JSON.stringify(raw);
                         const toks = s.match(/\b([a-zA-Z]{5,})\b/g) || [];
                         for (const t of toks) {
@@ -153,16 +132,13 @@ async function getSecretWord(showBatch) {
                         }
                     }
 
-                    // If string, try explicit patterns first
                     if (typeof raw === "string") {
-                        // explicit patterns
                         let m = raw.match(/(?:secret|answer|word)\s*(?:was|is|:)?\s*([a-zA-Z]{5,})/i);
                         if (m) {
                             const n = normalize(m[1]);
                             if (n && !invalidWords.has(n)) candidates.push(n);
                         }
 
-                        // also pull all 5-letter tokens
                         const toks = raw.match(/\b([a-zA-Z]{5,})\b/g) || [];
                         for (const t of toks) {
                             const n = normalize(t);
@@ -170,7 +146,6 @@ async function getSecretWord(showBatch) {
                         }
                     }
 
-                    // If the command echoes the real word (e.g., "word apple")
                     if (cmd && typeof cmd === "string") {
                         const cm = cmd.match(/\bword[:\s]+\s*([a-zA-Z]{5,})\b/i);
                         if (cm) {
@@ -184,7 +159,6 @@ async function getSecretWord(showBatch) {
             }
         }
 
-        //also check session commands fallback
         try {
             const session = await getSessionCommands(GAME_NAME);
             if (session && Array.isArray(session.commands)) {
@@ -204,7 +178,6 @@ async function getSecretWord(showBatch) {
             console.warn("session fallback failed:", e);
         }
 
-        // Normalize candidate list and remove duplicates while preserving order
         const seen = new Set();
         const uniqCandidates = [];
         for (const c of candidates) {
@@ -215,7 +188,6 @@ async function getSecretWord(showBatch) {
             }
         }
 
-        //Pick the first candidate that exists in the word bank
         for (const cand of uniqCandidates) {
             if (bankSet.has(cand)) return cand;
         }
@@ -233,14 +205,12 @@ async function initializeGame() {
     try {
         console.log("Initializing Snuzzle game...");
 
-        // Reset local variables
         currentRow = 0;
         currentTile = 0;
         currentGuess = "";
         gameOver = false;
         clearBoard();
 
-        // Always start a fresh session
         console.log("Starting fresh game");
         const commands = [
             "file snuzzle",
@@ -254,7 +224,6 @@ async function initializeGame() {
         console.log("Initialization response:", response);
         gameInitCommands = commands;
 
-        // Small delay to let backend sync before reading session
         if (response && response.results) {
             const showResult = response.results.find(r => r.command === "show");
             if (showResult && showResult.result) {
@@ -278,48 +247,6 @@ async function initializeGame() {
     }
 }
 
-async function restoreGameState(commands, response) {
-    const guessCommands = commands.filter(cmd => cmd.startsWith('guess '));
-    console.log('Restoring', guessCommands.length, 'previous guesses');
-
-    currentRow = 0;
-
-    if (response && response.results) {
-        for (let i = 0; i < guessCommands.length; i++) {
-            const guessCmd = guessCommands[i];
-            const word = guessCmd.split(' ')[1];
-            const result = response.results.find(r => r.command === guessCmd);
-
-            if (result && result.result) {
-                let guessResult;
-                if (typeof result.result === 'string') {
-                    try {
-                        guessResult = JSON.parse(result.result);
-                    } catch (e) {
-                        console.error('Failed to parse guess result:', e);
-                        continue;
-                    }
-                } else {
-                    guessResult = result.result;
-                }
-
-                if (guessResult.feedback) {
-                    updateBoardWithFeedback(word, guessResult.feedback, currentRow);
-                    updateKeyboard(word, guessResult.feedback);
-                    currentRow++;
-                }
-
-                if (guessResult.result === 'win' || guessResult.result === 'lose') {
-                    gameOver = true;
-                }
-            }
-        }
-    }
-
-    currentTile = 0;
-    currentGuess = "";
-}
-
 function attachKeyboardListeners() {
     document.addEventListener('keydown', handleKeyPress);
     const keys = document.querySelectorAll('.snuzzle-key');
@@ -335,6 +262,10 @@ async function resetGame() {
     gameOver = true;
     clearBoard();
     clearKeyboard();
+    
+    // Remove play again button
+    const playAgainBtn = document.querySelector('.snuzzle-play-again');
+    if (playAgainBtn) playAgainBtn.remove();
 
     try {
         await fetch(`/reset_game/${GAME_NAME}`, {
@@ -421,8 +352,17 @@ async function submitGuess() {
         const guess = currentGuess.toLowerCase();
         console.log('Submitting guess:', guess);
 
-        const allCommands = [...gameInitCommands, `guess ${guess}`];
-        const batchResponse = await sendBatchCommands(allCommands, GAME_NAME);
+        // FIXED: Only send the guess command, not all previous commands
+        const guessCommand = `guess ${guess}`;
+        const response = await sendCommand(guessCommand, GAME_NAME);
+        
+        // Wrap response in batch format for compatibility
+        const batchResponse = {
+            results: [{
+                command: guessCommand,
+                result: response
+            }]
+        };
 
         let result;
         if (batchResponse && batchResponse.results) {
@@ -437,9 +377,7 @@ async function submitGuess() {
                     try {
                         result = JSON.parse(guessResult.result);
                     } catch (e) {
-                        // Fallback: assume backend returned a simple object string
                         console.warn('submitGuess: guessResult.result is string but not JSON', guessResult.result);
-                        // As last resort, attempt to parse "feedback:..., result:..., remaining:..."
                         const fbMatch = guessResult.result.match(/feedback[:=]\s*([\u{1F7E9}\u{1F7E8}\u{2B1C}\u{1F7E8}\u{1F7E9}\u{1F7E6}\u{1F7E5}\u{1F7EA}\u{1F7EB}\u{1F7EC}]+)/u);
                         if (fbMatch) {
                             result = { feedback: fbMatch[1] };
@@ -474,7 +412,7 @@ async function submitGuess() {
             setTimeout(() => {
                 showMessage(`🎉 You won! The word was: ${winningWord}`, "success");
                 celebrateWin();
-                setTimeout(resetGame, 3000);
+                showPlayAgainButton();
             }, 2000);
             return;
         }
@@ -483,13 +421,13 @@ async function submitGuess() {
         if (result.result === "lose") {
             gameOver = true;
             setTimeout(async () => {
-                const showCommands = [...gameInitCommands, "show"];
-                const showBatch = await sendBatchCommands(showCommands, GAME_NAME);
+                const showResponse = await sendCommand("show", GAME_NAME);
+                const showBatch = { results: [{ command: "show", result: showResponse }] };
                 let revealed = await getSecretWord(showBatch);
-                if (!revealed) revealed = await getSecretWord(null); // try session-only
+                if (!revealed) revealed = await getSecretWord(null);
                 const finalWord = revealed ? revealed.toUpperCase() : "UNKNOWN";
                 showMessage(`Game Over! The word was: ${finalWord}`, "error");
-                setTimeout(resetGame, 3000);
+                showPlayAgainButton();
             }, 2000);
             return;
         }
@@ -498,13 +436,13 @@ async function submitGuess() {
         if (currentRow >= MAX_GUESSES && !gameOver) {
             gameOver = true;
             setTimeout(async () => {
-                const showCommands = [...gameInitCommands, "show"];
-                const showBatch = await sendBatchCommands(showCommands, GAME_NAME);
+                const showResponse = await sendCommand("show", GAME_NAME);
+                const showBatch = { results: [{ command: "show", result: showResponse }] };
                 let revealed = await getSecretWord(showBatch);
                 if (!revealed) revealed = await getSecretWord(null);
                 const finalWord = revealed ? revealed.toUpperCase() : "UNKNOWN";
                 showMessage(`Game Over! The word was: ${finalWord}`, "error");
-                setTimeout(resetGame, 3000);
+                showPlayAgainButton();
             }, 2000);
             return;
         }
@@ -608,6 +546,26 @@ function showMessage(text, type) {
     setTimeout(() => { message.remove(); }, 3000);
 }
 
+function showPlayAgainButton() {
+    // Remove existing button if any
+    const existingBtn = document.querySelector('.snuzzle-play-again');
+    if (existingBtn) existingBtn.remove();
+
+    const button = document.createElement('button');
+    button.className = 'snuzzle-play-again';
+    button.textContent = 'Play Again';
+    button.onclick = resetGame;
+    
+    // Insert button between board and keyboard
+    const keyboard = document.querySelector('.snuzzle-keyboard');
+    if (keyboard) {
+        keyboard.parentNode.insertBefore(button, keyboard);
+    } else {
+        const container = document.querySelector('.snuzzle') || document.body;
+        container.appendChild(button);
+    }
+}
+
 // CSS Animations
 const style = document.createElement('style');
 style.textContent = `
@@ -652,5 +610,26 @@ style.textContent = `
     .snuzzle-key--correct { background-color: #6aaa64 !important; color: white !important; }
     .snuzzle-key--misplaced { background-color: #c9b458 !important; color: white !important; }
     .snuzzle-key--wrong { background-color: #3a3a3c !important; color: white !important; }
+    .snuzzle-play-again {
+        padding: 1rem 2rem;
+        background-color: #e45a92;
+        color: white;
+        border: none;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 1.5rem auto;
+        display: block;
+    }
+    .snuzzle-play-again:hover {
+        background-color: #ff64a3;
+        transform: scale(1.05);
+    }
+    .snuzzle-play-again:active {
+        transform: scale(0.95);
+    }
 `;
 document.head.appendChild(style);

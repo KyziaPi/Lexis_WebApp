@@ -311,6 +311,30 @@ main.snuzzle {
   object-fit: contain;
 }
 
+.snuzzle-play-again {
+        padding: 1rem 2rem;
+        background-color: #e45a92;
+        color: white;
+        border: none;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 2rem auto 1rem auto;
+        display: block;
+    }
+    .snuzzle-play-again:hover {
+        background-color: #ff64a3;
+        transform: scale(1.05);
+    }
+    .snuzzle-play-again:active {
+        transform: scale(0.95);
+    }
+
+
+
 /* ====== KEYBOARD ====== */
 .snuzzle-keyboard {
   display: flex;
