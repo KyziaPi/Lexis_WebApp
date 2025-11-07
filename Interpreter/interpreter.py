@@ -121,6 +121,12 @@ class Interpreter:
             feedback = self._make_feedback(node.word)
             if node.word == self.secret:
                 win_msg = {"result": "win", "feedback": feedback}
+                if self.file_mode == "hints":
+                    if self.hint_index < len(self.secret_row) - 1:
+                        win_msg["remaining_hints"] = []
+                    while self.hint_index < len(self.secret_row) - 1:
+                        self.hint_index += 1     
+                        win_msg["remaining_hints"].append(self.secret_row[self.hint_index])
                 self.secret = None
                 self.secret_row = None
                 return json.dumps(win_msg)
@@ -129,7 +135,7 @@ class Interpreter:
                 if len(self.secret_row) > 1:
                     if self.hint_index < len(self.secret_row) - 1:
                         self.hint_index += 1
-                        extra = self.secret_row[self.hint_index]     
+                        extra = self.secret_row[self.hint_index]
             result = {"feedback": feedback, "remaining": self.remaining_guesses}
             result["result"] = "continue" if self.remaining_guesses > 0 else "lose"  
             if extra:
@@ -175,14 +181,21 @@ class Interpreter:
             return feedback
         elif self.file_mode == "letters":
             secret = self.secret
-            feedback = []
+            feedback = ["⬜"] * len(guess)
+            secret_counts = {}
+            # count letters in secret
+            for ch in secret:
+                secret_counts[ch] = secret_counts.get(ch, 0) + 1
+            # first pass: check 🟩
             for i, ch in enumerate(guess):
                 if i < len(secret) and ch == secret[i]:
-                    feedback.append("🟩")
-                elif ch in secret:
-                    feedback.append("🟨")
-                else:
-                    feedback.append("⬜")
+                    feedback[i] = "🟩"
+                    secret_counts[ch] -= 1  # reduce available count
+            # second pass: check 🟨 only if letter still available and not already green
+            for i, ch in enumerate(guess):
+                if feedback[i] == "⬜" and ch in secret_counts and secret_counts[ch] > 0:
+                    feedback[i] = "🟨"
+                    secret_counts[ch] -= 1
             return "".join(feedback)
         elif self.file_mode == "hints":
             if guess == self.secret:

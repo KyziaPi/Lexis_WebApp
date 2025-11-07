@@ -3,6 +3,7 @@ import json
 from os import urandom
 import re
 from Interpreter import Interpreter, InterpreterError
+import random
 
 app = Flask(__name__)
 app.secret_key = urandom(24)
@@ -234,7 +235,7 @@ def handle_show(game):
     if game == "filmster":
         # Edit words in session to include secret word and 3 random words
         filmster_edit_words(game, secret_word)
-        return jsonify(session.get(f"{game}_words", {}))       
+        return jsonify(session.get(f"{game}_words", {}))
                 
     return jsonify("Secret word has been saved.")
 
@@ -388,9 +389,7 @@ def format_filmster_words(game, result):
                     if movie_key in movie_keys:
                         hints = [parts[1], parts[2], parts[3]]
                         words_with_hints[movie_key] = hints
-        
-        print(f"Filmster: Loaded {len(words_with_hints)} movies with hints")
-        
+                
     except FileNotFoundError:
         print("ERROR: WordBanks/filmster file not found!")
         # Fallback: return movie names without hints
@@ -423,7 +422,6 @@ def format_filmster_guess(result, command, game):
 
 def filmster_edit_words(game, secret_word):
     """Edit Filmster words in session to include secret word and 3 random words"""
-    import random
     words_key = f"{game}_words"
     all_words = list(session.get(words_key, {}).keys())
     
@@ -436,7 +434,7 @@ def filmster_edit_words(game, secret_word):
     
     # Final list includes secret word and 3 random words
     final_words = [secret_word] + random_words
-    final_words.sort()
+    random.shuffle(final_words)
     
     # Update session words
     formatted_words = {}

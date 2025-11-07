@@ -50,7 +50,6 @@ async function startNewGame() {
         const hintMatch = resultText.match(/Hint:\s*(.+)/);
         if (hintMatch) {
           secretHint = hintMatch[1].trim();
-          console.log("Secret hint from interpreter:", secretHint);
         }
       }
       
@@ -60,7 +59,6 @@ async function startNewGame() {
         for (const [movieKey, hints] of Object.entries(movieHints)) {
           if (hints[0] === secretHint) {
             currentMovie = movieKey;
-            console.log("Matched secret movie:", currentMovie);
             break;
           }
         }
@@ -79,9 +77,7 @@ async function startNewGame() {
       filmsterFeedback.textContent = "Error: Could not determine secret word.";
       return;
     }
-    
-    console.log("Current secret movie:", currentMovie);
-    
+        
     // Display first hint for the secret word
     if (movieHints[currentMovie] && movieHints[currentMovie].length > 0) {
       displayHint(0, movieHints[currentMovie][0]);
@@ -206,7 +202,6 @@ async function startNewGame() {
     // Send guess to interpreter first to get response
     try {
       const guessResponse = await sendCommand(`guess ${movieKey}`, game);
-      console.log("Guess response from interpreter:", guessResponse);
     } catch (error) {
       console.error("Error sending guess:", error);
     }

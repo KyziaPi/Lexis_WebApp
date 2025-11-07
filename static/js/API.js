@@ -68,13 +68,9 @@ function handleRaildleResponse(cmd, response) {
 
 function handleFilmsterResponse(cmd, response) {
     if (cmd === "show") {
-        console.log("Filmster show response", response);
         if (response && typeof response === 'object') {
             window.filmsterMoviesData = response;
         }
-    }
-    if (cmd.startsWith("Filmster guess response:", response)) {
-        console.log(response);
     }
 }
 
@@ -86,7 +82,7 @@ function updateTriesCount(tries, element) {
 // Game initialization
 async function initGame(game, max_guesses = 6, secret_word = "") {
     try {
-        //setGameActive(game, false);
+        if (game == "filmster") setGameActive(game, false);
 
         // Fetch previous session commands
         const sessionData = await getCommands(game);

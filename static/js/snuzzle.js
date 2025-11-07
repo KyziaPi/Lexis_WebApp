@@ -221,7 +221,6 @@ async function initializeGame() {
         ];
 
         const response = await sendBatchCommands(commands, GAME_NAME);
-        console.log("Initialization response:", response);
         gameInitCommands = commands;
 
         if (response && response.results) {
@@ -350,7 +349,6 @@ async function submitGuess() {
 
     try {
         const guess = currentGuess.toLowerCase();
-        console.log('Submitting guess:', guess);
 
         // FIXED: Only send the guess command, not all previous commands
         const guessCommand = `guess ${guess}`;
