@@ -5,28 +5,29 @@ A collection of interactive word-guessing games built as a web application. Chal
 
 ---
 
-## 📘 Overview
+## Overview
 
 Guessarium combines several guessing games into one application powered by a custom interpreter called [**Lexis**](https://github.com/raldddddddd/Lexis). The system uses Flask on the backend, JavaScript for the frontend, and server-side sessions for saving game progress.
 
 ---
 
-## 📘 Table of Contents
+## Table of Contents
 
-1. [Game Modes](#snuzzle-letters-mode)
-2. [Getting Started](#prerequisites)
-4. [How to Play](#starting-a-game)
-5. [Technology Stack](#technology-stack)
-6. [Flask Endpoints](#flask-endpoints)
-7. [Frontend JavaScript Functions](#frontend-javascript-functions)
+1. [Game Modes](#game-modes)
+2. [Getting Started](#getting-started)
+3. [User Guide](#user-guide)
+4. [Technology Stack](#developer-reference)
+5. [Flask Endpoints](#flask-endpoints)
+6. [Frontend JavaScript Functions](#frontend-javascript-functions)
+7. [Adding a New Game Mode](#adding-a-new-game-mode)
 8. [Project Structure](#project-structure)
-
+9. [Developer Notes](#developer-notes)
 
 ---
 
-## 🧠 Game Modes
+## Game Modes
 
-### 🅰️ Snuzzle (Letters Mode)
+### Snuzzle (Letters Mode)
 
 * Guess a 5-letter word in 6 tries.
 * Type or use the on-screen keyboard.
@@ -36,7 +37,7 @@ Guessarium combines several guessing games into one application powered by a cus
   * 🟨 **Correct letter, wrong position**
   * ⬜ **Letter not in the word**
 
-### 🎬 Filmster (Hints Mode)
+### Filmster (Hints Mode)
 
 * Guess the movie based on hints revealed one by one.
 * Feedback after each guess:
@@ -44,7 +45,7 @@ Guessarium combines several guessing games into one application powered by a cus
   * 🟩 **Correct movie**
   * 🟥 **Wrong movie**
 
-### 👾 Raildle (Categories Mode)
+### Raildle (Categories Mode)
 
 * Guess the Honkai: Star Rail character from dropdown choices.
 * Each guess shows feedback across four categories:
@@ -58,7 +59,7 @@ Guessarium combines several guessing games into one application powered by a cus
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -87,7 +88,7 @@ Then open your browser and go to:
 
 ---
 
-## 🧩 User Guide
+## User Guide
 
 ### Starting a Game
 
@@ -105,9 +106,9 @@ Each game gives feedback in a color-coded or category-based format to help you d
 
 ---
 
-## 💻 Developer Reference
+## Developer Reference
 
-### 🛠️ Technology Stack
+### Technology Stack
 
 | Layer                  | Description                              |
 | ---------------------- | ---------------------------------------- |
@@ -131,7 +132,7 @@ Each game gives feedback in a color-coded or category-based format to help you d
 
 ---
 
-## ⚙️ Key Developer Notes
+## Key Developer Notes
 
 ### Flask Endpoints
 
@@ -193,7 +194,7 @@ When the page reloads, the JS function `initGame()` automatically fetches and re
 
 ---
 
-## 🧑‍💻 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -236,7 +237,7 @@ Lexis_WebApp/
 
 ---
 
-## 🔧 Developer Notes
+## Developer Notes
 
 * Use `session["<game>_commands"]` to persist command history.
 * Use `session["<game>_loaded"]` to track reload states.
