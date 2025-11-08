@@ -13,14 +13,13 @@ Guessarium combines several guessing games into one application powered by a cus
 
 ## 📘 Table of Contents
 
-1. [Game Modes](#game-modes)
-2. [Getting Started](#getting-started)
-4. [How to Play](#user-guide)
-5. [Developer Reference](#developer-reference)
+1. [Game Modes](#snuzzle-letters-mode)
+2. [Getting Started](#prerequisites)
+4. [How to Play](#starting-a-game)
+5. [Technology Stack](#technology-stack)
 6. [Flask Endpoints](#flask-endpoints)
 7. [Frontend JavaScript Functions](#frontend-javascript-functions)
 8. [Project Structure](#project-structure)
-9. [Developer notes](#developer-notes)
 
 
 ---
