@@ -16,7 +16,7 @@ Guessarium combines several guessing games into one application powered by a cus
 1. [Game Modes](#game-modes)
 2. [Getting Started](#getting-started)
 3. [User Guide](#user-guide)
-4. [Technology Stack](#developer-reference)
+4. [Developer Reference](#developer-reference)
 5. [Flask Endpoints](#flask-endpoints)
 6. [Frontend JavaScript Functions](#frontend-javascript-functions)
 7. [Adding a New Game Mode](#adding-a-new-game-mode)
