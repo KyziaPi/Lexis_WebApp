@@ -20,6 +20,7 @@ async function initializeGame() {
         currentRow = 0;
         currentTile = 0;
         currentGuess = "";
+        guesses = [];
         gameOver = false;
         clearBoard();
         
@@ -158,6 +159,7 @@ async function submitGuess() {
             if (guessResult && guessResult.result) {
                 if (typeof guessResult.result === 'string') {
                     if (guessResult.result.startsWith('Error:')) {
+                        guesses.pop();
                         showMessage("Word not in word bank!", "error");
                         shakeTiles(currentRow);
                         return;
@@ -201,7 +203,7 @@ async function submitGuess() {
                 showMessage(`🎉 You won! The word was: ${winningWord}`, "success");
                 celebrateWin();
                 showPlayAgainButton();
-            }, 2000);
+            }, 1000);
             return;
         }
 
@@ -214,7 +216,7 @@ async function submitGuess() {
                 const finalWord = revealed ? revealed.toUpperCase() : "UNKNOWN";
                 showMessage(`Game Over! The word was: ${finalWord}`, "error");
                 showPlayAgainButton();
-            }, 2000);
+            }, 1000);
             return;
         }
 
@@ -314,7 +316,10 @@ function showMessage(text, type) {
     const container = document.querySelector('.snuzzle') || document.body;
     container.prepend(message);
 
-    setTimeout(() => { message.remove(); }, 3000);
+    setTimeout(() => {
+        message.style.animation = 'fadeOut 0.3s ease-in-out forwards';
+        message.addEventListener('animationend', () => message.remove());
+    }, 2700);
 }
 
 function showPlayAgainButton() {
@@ -373,10 +378,14 @@ style.textContent = `
     }
     .snuzzle-message--error { background-color: #f87171; color: white; }
     .snuzzle-message--success { background-color: #6aaa64; color: white; }
-    .snuzzle-message--info { background-color: #60a5fa; color: white; }
+    .snuzzle-message--info { background-color: #e45a92; color: white; }
     @keyframes fadeIn {
         from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
         to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateX(-50%) translateY(0); }
+        to { opacity: 0; transform: translateX(-50%) translateY(-10px); }
     }
     .snuzzle-key--correct { background-color: #6aaa64 !important; color: white !important; }
     .snuzzle-key--misplaced { background-color: #c9b458 !important; color: white !important; }
