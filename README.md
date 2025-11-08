@@ -104,6 +104,8 @@ Each games have a **dedicated tutorial** on how to play them.
 
 Each game gives feedback in a color-coded or category-based format to help you deduce the answer.
 
+**For more details about the user guide, go to [Guessarium User Guide](https://github.com/KyziaPi/Lexis_WebApp/blob/main/Documentations/Guessarium_UserGuide.pdf)**
+
 ---
 
 ## Developer Reference
@@ -131,8 +133,6 @@ Each game gives feedback in a color-coded or category-based format to help you d
 
 
 ---
-
-## Key Developer Notes
 
 ### Flask Endpoints
 
@@ -191,6 +191,9 @@ When the page reloads, the JS function `initGame()` automatically fetches and re
 2. Define logic in the Lexis interpreter or add a new AST node if needed.
 3. Add a new route in `app.py`.
 4. Create a corresponding template and JS file in `/templates` and `/static/js`.
+
+**For more details about the developer reference manual, go to [Guessarium Developer Reference Manual](https://github.com/KyziaPi/Lexis_WebApp/blob/main/Documentations/Guessarium_DeveloperReferenceManual.pdf)**
+
 
 ---
 
