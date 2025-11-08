@@ -98,7 +98,7 @@ Then open your browser and go to:
 
 ### Game Controls
 
-* Each games have a **dedicated tutorial** on how to play them.
+Each games have a **dedicated tutorial** on how to play them.
 
 ### Game Feedback
 
