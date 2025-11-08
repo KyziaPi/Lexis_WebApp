@@ -59,6 +59,7 @@ body.homepage {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-top: 6rem;
 }
 
 main.homepage {
@@ -154,7 +155,11 @@ main.homepage {
 /* NAVBAR */
 
 .navbar {
-    padding: 0 1rem;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
 }
 
 nav.snuzzle-nav {
@@ -236,7 +241,7 @@ body.snuzzle {
   font-family: 'Poppins', sans-serif;
   background-color: #fff;
   margin: 0;
-  padding: 0;
+  padding: 6rem 0 0 0;
 }
 
 main.snuzzle {
@@ -1021,6 +1026,7 @@ body.raildle {
     background-position: center;
     background-attachment: fixed;
     height: 100vh;
+    padding-top: 6rem;
 }
 
 .raildle-main-card {
@@ -1051,7 +1057,7 @@ body.raildle {
 .raildle-main-card__dropdown-container {
     display: flex;
     justify-content: center;
-    z-index: 100;
+    z-index: 2;
 }
 
 .raildle-main-card__table-container {
