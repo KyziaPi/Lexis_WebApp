@@ -53,12 +53,3 @@ function isGameOver(game) {
 function getWinstreak(game) {
   return gameState[game] ? gameState[game].winstreak : 0;
 }
-
-// Example usage
-// setGameActive('snuzzle', true);
-// incrementWinstreak('snuzzle');
-// console.log(getWinstreak('snuzzle')); // 0
-
-// setGameActive('filmster', false);
-// resetWinstreak('filmster');
-// console.log(isGameActive('filmster')); // false

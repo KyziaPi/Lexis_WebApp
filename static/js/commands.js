@@ -52,8 +52,6 @@ function handleCommandResponse(cmd, game, response) {
     else if (game === "filmster") { 
         handleFilmsterResponse(cmd, response); 
     }
-    // Add other game handlers here as needed
-    // else if (game === "snuzzle") { handleSnuzzleResponse(cmd, response); }
 }
 
 // Game-specific response handlers

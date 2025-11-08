@@ -237,6 +237,7 @@ def handle_show(game):
         return jsonify(session.get(f"{game}_words", {}))
     
     if game == "snuzzle":
+        # Edit show to give only the secret word
         result = re.split(r":\s*", result)[1].strip()
         return jsonify(result)
                 
