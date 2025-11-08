@@ -6,7 +6,7 @@ let currentRow = 0;
 let currentTile = 0;
 let currentGuess = "";
 let gameOver = false;
-let secretWord = "brand";
+let secretWord = "";
 let guesses = [];
 
 document.addEventListener('DOMContentLoaded', () => {
