@@ -43,7 +43,7 @@ Luka | Nihility | Physical | Jarilo-VI | Regret of Infinite Ochema
 Luocha | Abundance | Imaginary | Xianzhou Alliance | Guardian's Lament
 Lynx | Abundance | Quantum | Jarilo-VI | Regret of Infinite Ochema
 March7th | Preservation | Ice | Astral Express | Destroyer's Final Road
-Evernight | Remembrance | Ice | Amphoreus | Daythunder Anamnesis
+Evernight | Remembrance | Ice | Amphoreus | Sea Siren's Torn Fin
 March7thHunt | Hunt | Imaginary | Astral Express | Destroyer's Final Road
 Misha | Destruction | Ice | Penacony | Past Evils of the Borehole Planet Disaster
 Moze | Hunt | Lightning | Xianzhou Alliance | Auspice Sliver
@@ -77,3 +77,4 @@ Xueyi | Destruction | Quantum | Xianzhou Alliance | Past Evils of the Borehole P
 Yanqing | Hunt | Ice | Xianzhou Alliance | Guardian's Lament
 Yukong | Harmony | Imaginary | Xianzhou Alliance | Destroyer's Final Road
 Yunli | Destruction | Physical | Xianzhou Alliance | Regret of Infinite Ochema
+Cyrene | Remembrance | Ice | Amphoreus | Sea Siren's Torn Fin

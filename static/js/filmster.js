@@ -217,6 +217,14 @@ async function startNewGame() {
       updateWinstreakDisplay();
       setGameOver(game, true);
       showPlayAgainButton();
+      // Display all movie hints
+      if (movieHints[currentMovie] && hintIndex < movieHints[currentMovie].length) {
+        while (hintIndex < movieHints[currentMovie].length) {
+          const nextHint = movieHints[currentMovie][hintIndex];
+          displayHint(hintIndex, nextHint);
+          hintIndex++;
+        }
+      }
     } else {
       // Wrong guess
       button.classList.add('incorrect');

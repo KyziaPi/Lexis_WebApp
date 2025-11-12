@@ -59,7 +59,6 @@ body.homepage {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 6rem;
 }
 
 main.homepage {
@@ -243,7 +242,7 @@ body.snuzzle {
   font-family: 'Poppins', sans-serif;
   background-color: #fff;
   margin: 0;
-  padding: 6rem 0 0 0;
+  padding-top: 5rem;
 }
 
 main.snuzzle {
@@ -702,9 +701,10 @@ main.snuzzle {
 }
 
 /* FILMSTER */
-.filmster {
+body.filmster {
   text-align: center !important;
   position: relative;
+  padding-top: 5rem;
 }
 
 .filmster * {
@@ -728,7 +728,7 @@ main.snuzzle {
 
 .filmster-tries-info {
   position: absolute;
-  top: 3rem;
+  top: 10rem;
   right: 2rem;
   font-size: 1.2rem;
   font-weight: 600;
@@ -737,7 +737,7 @@ main.snuzzle {
 
 .filmster-streak-info {
   position: absolute;
-  top: 5rem;
+  top: 12rem;
   right: 2rem;
   font-size: 1.1rem;
   font-weight: 600;
@@ -1028,7 +1028,7 @@ body.raildle {
     background-position: center;
     background-attachment: fixed;
     height: 100vh;
-    padding-top: 6rem;
+    padding-top: 5rem;
 }
 
 .raildle-main-card {
