@@ -220,6 +220,9 @@ def handle_show(game):
     secret_word = result.split(":", 1)[1].strip()
     secret_key = f"{game}_secret_word"
     session[secret_key] = secret_word
+     
+    # Print Secret word
+    print(f"Secret word: {session[secret_key]}")
     
     # update saved session command "word" to have the secret word
     game_commands = session[f"{game}_commands"]

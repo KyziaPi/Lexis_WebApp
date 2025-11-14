@@ -99,8 +99,9 @@ async function initGame(game, max_guesses = 6, secret_word = "") {
             "start",
             `max_guesses ${max_guesses}`,
             `word ${secret_word}`,
+            "show"
         ];
-        if (game == "raildle" || game == "filmster") commands.splice(4, 0, "words", "show");
+        if (game == "raildle" || game == "filmster") commands.splice(4, 0, "words");
 
         // Set game as active
         setGameActive(game, true);
